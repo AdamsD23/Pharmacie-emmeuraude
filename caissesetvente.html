@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PharmaCare POS - Ventes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffddb8",
+                    "secondary": "#006591",
+                    "on-error": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#006c49",
+                    "surface-variant": "#d3e4fe",
+                    "on-tertiary-container": "#523200",
+                    "on-primary-container": "#00422b",
+                    "surface-bright": "#f8f9ff",
+                    "on-primary-fixed": "#002113",
+                    "secondary-fixed": "#c9e6ff",
+                    "tertiary": "#855300",
+                    "error": "#ba1a1a",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#6ffbbe",
+                    "surface": "#f8f9ff",
+                    "on-background": "#0b1c30",
+                    "on-primary-fixed-variant": "#005236",
+                    "primary": "#006c49",
+                    "surface-container-high": "#dce9ff",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#39b8fd",
+                    "on-tertiary-fixed": "#2a1700",
+                    "on-secondary-fixed-variant": "#004c6e",
+                    "primary-fixed-dim": "#4edea3",
+                    "tertiary-container": "#e29100",
+                    "tertiary-fixed-dim": "#ffb95f",
+                    "inverse-primary": "#4edea3",
+                    "inverse-surface": "#213145",
+                    "secondary-fixed-dim": "#89ceff",
+                    "on-tertiary-fixed-variant": "#653e00",
+                    "surface-container-highest": "#d3e4fe",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#e5eeff",
+                    "on-surface": "#0b1c30",
+                    "on-secondary-container": "#004666",
+                    "outline-variant": "#bbcabf",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-on-surface": "#eaf1ff",
+                    "background": "#f8f9ff",
+                    "outline": "#6c7a71",
+                    "on-secondary-fixed": "#001e2f",
+                    "surface-dim": "#cbdbf5",
+                    "primary-container": "#10b981",
+                    "surface-container-low": "#eff4ff",
+                    "on-surface-variant": "#3c4a42",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "xl": "32px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "base": "4px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "container-margin": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "code-md": ["jetbrainsMono"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                    "code-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; }
+        
+        @keyframes subtle-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+        }
+        .active-item-pulse { animation: subtle-bounce 2s infinite ease-in-out; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col md:flex-row overflow-hidden">
+<!-- Top AppBar (Mobile View) -->
+<header class="md:hidden bg-surface shadow-sm docked full-width top-0 z-40 flex justify-between items-center w-full px-gutter h-16">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary cursor-pointer">menu</span>
+<h1 class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">PharmaCare Admin</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</div>
+</header>
+<!-- Desktop Sidebar (NavigationDrawer) -->
+<aside class="hidden md:flex flex-col h-screen w-72 bg-surface shadow-xl py-4 flex-shrink-0 z-50">
+<div class="px-6 mb-8">
+<h2 class="font-headline-sm text-headline-sm text-primary font-bold">PharmaCare POS</h2>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high transition-all mx-4 rounded-lg" href="tableaudebordpharmacy.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-body-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high transition-all mx-4 rounded-lg" href="gestiondestocks.html">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md">Stock</span>
+</a>
+<a class="flex items-center gap-4 bg-primary-container text-on-primary-container rounded-r-full font-bold px-4 py-3 mr-4" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-body-md">Ventes</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high transition-all mx-4 rounded-lg" href="gestionfournisseur.html">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-body-md">Fournisseurs</span>
+</a>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high transition-all mx-4 rounded-lg" href="tableaudebordpharmacy.html">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md">Historique</span>
+</a>
+</nav>
+<div class="mt-auto px-6 pt-6 border-t border-outline-variant">
+<div class="flex items-center gap-3 mb-4">
+<img alt="Dr. Koffi" class="w-10 h-10 rounded-full bg-secondary-container object-cover" data-alt="A portrait of a professional West African pharmacist with a confident and warm expression, wearing a crisp white medical coat in a bright, modern pharmacy setting in Abidjan. The lighting is clean and professional, creating an atmosphere of trust and clinical excellence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALwkbdwHQhD8Uzw7wBvpSHUWV4TjOP_H2-plXF9-9044s3AHmsUZlLd72mZcsyZBORUHdEWrgBQ1gB8Yp6S33s_OmxQxhaAtTUknf_BuWlqilFJ298RLeZHoYEZulCOAiDBKea7M71Rnt_0KocJ3OlQCCgbwBHe96eCv9Zay6tgInZN4SZCPwgceLl9mO8AZuGMTVh8RjyZmeE5A2WN2HgXuSTz05HXxq5dz3TMyba3X2Z0eqQK1699prqn2CE_vzaqZ6XR711EAJM"/>
+<div>
+<p class="font-title-lg text-title-lg text-on-surface leading-tight">Dr. Koffi</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Pharmacien Titulaire</p>
+</div>
+</div>
+<a class="flex items-center gap-4 text-on-surface-variant px-4 py-3 hover:bg-surface-container-high transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-body-md">Paramètres</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-background">
+<!-- Left: Search & Product Selection -->
+<section class="flex-1 flex flex-col p-4 md:p-6 overflow-hidden">
+<div class="mb-6">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface rounded-xl border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none text-body-lg font-body-lg transition-all shadow-sm" id="productSearch" placeholder="Rechercher un médicament (DCI, Nom, Code-barres)..." type="text"/>
+</div>
+<div class="flex flex-wrap gap-2 mt-4">
+<span class="px-4 py-1.5 bg-surface-container-high rounded-full text-label-md font-label-md text-on-surface-variant cursor-pointer hover:bg-primary-container hover:text-on-primary-container transition-colors">Antibiotiques</span>
+<span class="px-4 py-1.5 bg-surface-container-high rounded-full text-label-md font-label-md text-on-surface-variant cursor-pointer hover:bg-primary-container hover:text-on-primary-container transition-colors">Analgésiques</span>
+<span class="px-4 py-1.5 bg-surface-container-high rounded-full text-label-md font-label-md text-on-surface-variant cursor-pointer hover:bg-primary-container hover:text-on-primary-container transition-colors">Pédiatrie</span>
+<span class="px-4 py-1.5 bg-surface-container-high rounded-full text-label-md font-label-md text-on-surface-variant cursor-pointer hover:bg-primary-container hover:text-on-primary-container transition-colors">Dermatologie</span>
+</div>
+</div>
+<!-- Products Grid (Mockup Data) -->
+<div class="flex-1 overflow-y-auto hide-scrollbar grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-24 md:pb-6">
+<!-- Product Card 1 -->
+<button class="flex flex-col p-4 bg-surface rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all text-left group active:scale-95 duration-150" onclick="addToCart('Paracétamol 500mg', 1200, 'Boite de 16')">
+<div class="w-full h-32 mb-3 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-4xl opacity-50">medication</span>
+</div>
+<span class="font-title-lg text-title-lg text-on-surface mb-1">Paracétamol 500mg</span>
+<span class="text-label-md text-on-surface-variant mb-2">Boite de 16 • Générique</span>
+<div class="mt-auto flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-primary">1 200 FCFA</span>
+<div class="px-2 py-0.5 bg-surface-container-low text-primary-container text-[10px] font-bold rounded uppercase border border-primary">En Stock</div>
+</div>
+</button>
+<!-- Product Card 2 -->
+<button class="flex flex-col p-4 bg-surface rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all text-left group active:scale-95 duration-150" onclick="addToCart('Amoxicilline 1g', 3500, 'Bte 12')">
+<div class="w-full h-32 mb-3 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-4xl opacity-50">vaccines</span>
+</div>
+<span class="font-title-lg text-title-lg text-on-surface mb-1">Amoxicilline 1g</span>
+<span class="text-label-md text-on-surface-variant mb-2">Bte 12 • Antibiotique</span>
+<div class="mt-auto flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-primary">3 500 FCFA</span>
+<div class="px-2 py-0.5 bg-tertiary-fixed text-tertiary text-[10px] font-bold rounded uppercase border border-tertiary">Faible (4)</div>
+</div>
+</button>
+<!-- Product Card 3 -->
+<button class="flex flex-col p-4 bg-surface rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all text-left group active:scale-95 duration-150" onclick="addToCart('Sirop Toux Enfant', 2850, 'Flacon 125ml')">
+<div class="w-full h-32 mb-3 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-4xl opacity-50">liquor</span>
+</div>
+<span class="font-title-lg text-title-lg text-on-surface mb-1">Sirop Toux Enfant</span>
+<span class="text-label-md text-on-surface-variant mb-2">Flacon 125ml • Pédiatrie</span>
+<div class="mt-auto flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-primary">2 850 FCFA</span>
+<div class="px-2 py-0.5 bg-surface-container-low text-primary-container text-[10px] font-bold rounded uppercase border border-primary">En Stock</div>
+</div>
+</button>
+<!-- Product Card 4 -->
+<button class="flex flex-col p-4 bg-surface rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all text-left group active:scale-95 duration-150" onclick="addToCart('Gaviscon Suspension', 4200, 'Sachets x20')">
+<div class="w-full h-32 mb-3 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-4xl opacity-50">gastroenterology</span>
+</div>
+<span class="font-title-lg text-title-lg text-on-surface mb-1 text-ellipsis overflow-hidden">Gaviscon Suspension</span>
+<span class="text-label-md text-label-md text-on-surface-variant mb-2">Sachets x20 • Estomac</span>
+<div class="mt-auto flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-primary">4 200 FCFA</span>
+<div class="px-2 py-0.5 bg-surface-container-low text-primary-container text-[10px] font-bold rounded uppercase border border-primary">En Stock</div>
+</div>
+</button>
+<!-- Repeat cards for visual weight -->
+<button class="flex flex-col p-4 bg-surface rounded-xl border border-outline-variant hover:border-primary hover:shadow-md transition-all text-left group active:scale-95 duration-150" onclick="addToCart('Dolirhume', 2200, 'Boite 16')">
+<div class="w-full h-32 mb-3 rounded-lg bg-surface-container flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-primary text-4xl opacity-50">emergency</span>
+</div>
+<span class="font-title-lg text-title-lg text-on-surface mb-1">Dolirhume</span>
+<span class="text-label-md text-on-surface-variant mb-2">Boite 16 • Rhume</span>
+<div class="mt-auto flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-primary">2 200 FCFA</span>
+<div class="px-2 py-0.5 bg-surface-container-low text-primary-container text-[10px] font-bold rounded uppercase border border-primary">En Stock</div>
+</div>
+</button>
+</div>
+</section>
+<!-- Right: Cart / Checkout Panel -->
+<section class="w-full md:w-[400px] bg-surface flex flex-col border-l border-outline-variant shadow-2xl z-20">
+<!-- Cart Header -->
+<div class="p-6 border-b border-outline-variant flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">shopping_basket</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Panier Actuel</h2>
+</div>
+<button class="text-label-md font-label-md text-error hover:underline" onclick="clearCart()">Vider</button>
+</div>
+<!-- Cart Items List -->
+<div class="flex-1 overflow-y-auto p-4 space-y-4 hide-scrollbar" id="cartItems">
+<!-- Empty State Message -->
+<div class="flex flex-col items-center justify-center h-full text-center p-8 opacity-40" id="emptyCartMessage">
+<span class="material-symbols-outlined text-6xl mb-4">shopping_cart_off</span>
+<p class="font-body-lg">Le panier est vide.<br/>Ajoutez des produits pour commencer.</p>
+</div>
+</div>
+<!-- Checkout Summary -->
+<div class="p-6 bg-surface-container-low space-y-6">
+<!-- Payment Methods -->
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-3">MODE DE PAIEMENT</p>
+<div class="grid grid-cols-2 gap-3">
+<button class="payment-btn flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-primary bg-primary-container text-on-primary-container transition-all" id="payCash" onclick="setPaymentMode('cash')">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-label-md">Espèces</span>
+</button>
+<button class="payment-btn flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-outline-variant bg-surface text-on-surface-variant transition-all" id="payMobile" onclick="setPaymentMode('mobile')">
+<span class="material-symbols-outlined">smartphone</span>
+<span class="font-label-md">Mobile Money</span>
+</button>
+</div>
+</div>
+<!-- Price Recap -->
+<div class="space-y-2">
+<div class="flex justify-between font-body-md text-on-surface-variant">
+<span>Sous-total</span>
+<span id="subtotal">0 FCFA</span>
+</div>
+<div class="flex justify-between font-body-md text-on-surface-variant">
+<span>TVA (18%)</span>
+<span id="tax">0 FCFA</span>
+</div>
+<div class="pt-4 border-t border-outline-variant flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm text-on-surface">TOTAL</span>
+<span class="font-headline-lg text-headline-lg text-primary font-bold" id="total">0 FCFA</span>
+</div>
+</div>
+<button class="w-full py-5 bg-primary text-on-primary rounded-xl font-headline-sm text-headline-sm shadow-lg hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed" id="validateBtn" onclick="validateSale()">
+                    Valider la vente
+                </button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-2 bg-surface-container shadow-lg border-t border-outline-variant">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="tableaudebordpharmacy.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="gestiondestocks.html">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Stock</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-md text-label-md">Sales</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="profile.html">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<!-- Floating Toast Notification (Hidden by default) -->
+<div class="fixed top-6 left-1/2 -translate-x-1/2 z-[60] bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-full shadow-2xl transform translate-y-[-200%] transition-transform duration-500 flex items-center gap-3" id="toast">
+<span class="material-symbols-outlined text-primary-fixed">check_circle</span>
+<span class="font-body-md" id="toastMessage">Vente enregistrée avec succès !</span>
+</div>
+<script>
+        let cart = [];
+        let currentPaymentMode = 'cash';
+
+        function addToCart(name, price, detail) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price, detail, quantity: 1 });
+            }
+            renderCart();
+            playSoftClick();
+        }
+
+        function updateQuantity(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            renderCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            renderCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            renderCart();
+        }
+
+        function setPaymentMode(mode) {
+            currentPaymentMode = mode;
+            const cashBtn = document.getElementById('payCash');
+            const mobileBtn = document.getElementById('payMobile');
+            
+            if (mode === 'cash') {
+                cashBtn.classList.replace('border-outline-variant', 'border-primary');
+                cashBtn.classList.replace('bg-surface', 'bg-primary-container');
+                cashBtn.classList.replace('text-on-surface-variant', 'text-on-primary-container');
+                
+                mobileBtn.classList.replace('border-primary', 'border-outline-variant');
+                mobileBtn.classList.replace('bg-primary-container', 'bg-surface');
+                mobileBtn.classList.replace('text-on-primary-container', 'text-on-surface-variant');
+            } else {
+                mobileBtn.classList.replace('border-outline-variant', 'border-primary');
+                mobileBtn.classList.replace('bg-surface', 'bg-primary-container');
+                mobileBtn.classList.replace('text-on-surface-variant', 'text-on-primary-container');
+                
+                cashBtn.classList.replace('border-primary', 'border-outline-variant');
+                cashBtn.classList.replace('bg-primary-container', 'bg-surface');
+                cashBtn.classList.replace('text-on-primary-container', 'text-on-surface-variant');
+            }
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cartItems');
+            const emptyMsg = document.getElementById('emptyCartMessage');
+            const validateBtn = document.getElementById('validateBtn');
+            
+            if (cart.length === 0) {
+                container.innerHTML = '';
+                container.appendChild(emptyMsg);
+                emptyMsg.classList.remove('hidden');
+                validateBtn.disabled = true;
+            } else {
+                emptyMsg.classList.add('hidden');
+                validateBtn.disabled = false;
+                container.innerHTML = cart.map((item, index) => `
+                    <div class="flex items-center gap-3 p-3 bg-surface rounded-lg border border-outline-variant animate-in fade-in slide-in-from-right-4 duration-300">
+                        <div class="flex-1">
+                            <p class="font-title-lg text-on-surface">${item.name}</p>
+                            <p class="text-label-md text-on-surface-variant">${item.detail}</p>
+                            <p class="font-body-md text-primary font-bold mt-1">${(item.price * item.quantity).toLocaleString()} FCFA</p>
+                        </div>
+                        <div class="flex items-center gap-2 bg-surface-container-high rounded-lg p-1">
+                            <button onclick="updateQuantity(${index}, -1)" class="w-8 h-8 flex items-center justify-center hover:bg-surface-variant rounded transition-colors">
+                                <span class="material-symbols-outlined text-sm">remove</span>
+                            </button>
+                            <span class="w-6 text-center font-bold">${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="w-8 h-8 flex items-center justify-center hover:bg-surface-variant rounded transition-colors">
+                                <span class="material-symbols-outlined text-sm">add</span>
+                            </button>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-outline hover:text-error transition-colors">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                    </div>
+                `).join('');
+            }
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+            const tax = Math.round(subtotal * 0.18);
+            const total = subtotal + tax;
+
+            document.getElementById('subtotal').innerText = `${subtotal.toLocaleString()} FCFA`;
+            document.getElementById('tax').innerText = `${tax.toLocaleString()} FCFA`;
+            document.getElementById('total').innerText = `${total.toLocaleString()} FCFA`;
+        }
+
+        function validateSale() {
+            showToast("Vente validée avec succès !");
+            cart = [];
+            renderCart();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.style.transform = 'translate(-50%, 0)';
+            setTimeout(() => {
+                toast.style.transform = 'translate(-50%, -200%)';
+            }, 3000);
+        }
+
+        function playSoftClick() {
+            // Virtual haptic/sound cue
+            const btn = event.currentTarget;
+            btn.classList.add('active:scale-95');
+        }
+
+        // Initialize state
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCart();
+        });
+    </script>
+</body></html>
+
+
+
+
+
+
+
+
+
+
+
+

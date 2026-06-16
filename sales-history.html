@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>PharmaCare Admin - Historique des Ventes</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffddb8",
+                        "secondary": "#006591",
+                        "on-error": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-tint": "#006c49",
+                        "surface-variant": "#d3e4fe",
+                        "on-tertiary-container": "#523200",
+                        "on-primary-container": "#00422b",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary-fixed": "#002113",
+                        "secondary-fixed": "#c9e6ff",
+                        "tertiary": "#855300",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#6ffbbe",
+                        "surface": "#f8f9ff",
+                        "on-background": "#0b1c30",
+                        "on-primary-fixed-variant": "#005236",
+                        "primary": "#006c49",
+                        "surface-container-high": "#dce9ff",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#39b8fd",
+                        "on-tertiary-fixed": "#2a1700",
+                        "on-secondary-fixed-variant": "#004c6e",
+                        "primary-fixed-dim": "#4edea3",
+                        "tertiary-container": "#e29100",
+                        "tertiary-fixed-dim": "#ffb95f",
+                        "inverse-primary": "#4edea3",
+                        "inverse-surface": "#213145",
+                        "secondary-fixed-dim": "#89ceff",
+                        "on-tertiary-fixed-variant": "#653e00",
+                        "surface-container-highest": "#d3e4fe",
+                        "error-container": "#ffdad6",
+                        "surface-container": "#e5eeff",
+                        "on-surface": "#0b1c30",
+                        "on-secondary-container": "#004666",
+                        "outline-variant": "#bbcabf",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "background": "#f8f9ff",
+                        "outline": "#6c7a71",
+                        "on-secondary-fixed": "#001e2f",
+                        "surface-dim": "#cbdbf5",
+                        "primary-container": "#10b981",
+                        "surface-container-low": "#eff4ff",
+                        "on-surface-variant": "#3c4a42",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "gutter": "16px",
+                        "xs": "4px",
+                        "container-margin": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "label-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "code-md": ["jetbrainsMono"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-sm-mobile": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-lg": ["18px", {"lineHeight": "24px", "fontWeight": "500"}],
+                        "code-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-24">
+    <!-- TopAppBar -->
+    <header class="bg-surface shadow-sm sticky top-0 z-50 flex justify-between items-center w-full px-gutter h-16">
+        <div class="flex items-center gap-4">
+            <button class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full active:scale-95 duration-150">
+                <span class="material-symbols-outlined">arrow_back</span>
+            </button>
+            <h1 class="font-headline-sm text-headline-sm text-primary">Historique des Ventes</h1>
+        </div>
+        <div class="flex items-center gap-2">
+            <button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full active:scale-95 duration-150">
+                <span class="material-symbols-outlined">notifications</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-[1280px] mx-auto px-gutter py-md">
+        <!-- Stats Overview -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-md mb-lg">
+            <div class="bg-surface-container p-md rounded-xl">
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Ventes du jour</p>
+                <p class="font-headline-md text-headline-md text-primary mt-1">1,240,500 FCFA</p>
+            </div>
+            <div class="bg-surface-container p-md rounded-xl">
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Transactions</p>
+                <p class="font-headline-md text-headline-md text-secondary mt-1">47</p>
+            </div>
+            <div class="bg-surface-container p-md rounded-xl">
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Panier moyen</p>
+                <p class="font-headline-md text-headline-md text-tertiary mt-1">26,400 FCFA</p>
+            </div>
+            <div class="bg-surface-container p-md rounded-xl">
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Ce mois</p>
+                <p class="font-headline-md text-headline-md text-primary mt-1">28.5M FCFA</p>
+            </div>
+        </section>
+
+        <!-- Filter Bar -->
+        <section class="bg-white p-md rounded-xl shadow-sm mb-lg border border-outline-variant/30 flex flex-col md:flex-row gap-4">
+            <div class="relative flex-grow">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+                <input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none" placeholder="Rechercher une transaction..." type="text"/>
+            </div>
+            <div class="flex gap-2">
+                <button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors font-body-md text-body-md text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                    Aujourd'hui
+                </button>
+                <button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors font-body-md text-body-md text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px]">date_range</span>
+                    Cette semaine
+                </button>
+                <button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg hover:bg-on-primary-fixed-variant transition-colors font-body-md text-body-md">
+                    <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                    Filtres
+                </button>
+            </div>
+        </section>
+
+        <!-- Sales History List -->
+        <section class="space-y-4">
+            <h2 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-primary">receipt_long</span>
+                Transactions Récentes
+            </h2>
+
+            <!-- Sale Card 1 -->
+            <div class="bg-white rounded-xl p-md shadow-sm border border-outline-variant/20 hover:shadow-md transition-shadow cursor-pointer group">
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+                    <div class="flex gap-4">
+                        <div class="h-12 w-12 bg-primary-container rounded-lg flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">receipt</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-outline uppercase">15 Oct 2023 • 14:32</p>
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mt-1 group-hover:text-primary transition-colors">Vente #VT-2023-1047</h3>
+                            <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">person</span>
+                                Mme. Aminata Koné
+                            </p>
+                            <p class="font-body-md text-body-md text-on-surface-variant">5 articles • Espèces</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:flex-col md:items-end md:justify-center gap-2">
+                        <span class="font-headline-sm text-headline-sm text-primary">45,500 FCFA</span>
+                        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md">
+                            Complété
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sale Card 2 -->
+            <div class="bg-white rounded-xl p-md shadow-sm border border-outline-variant/20 hover:shadow-md transition-shadow cursor-pointer group">
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+                    <div class="flex gap-4">
+                        <div class="h-12 w-12 bg-secondary-container rounded-lg flex items-center justify-center text-secondary">
+                            <span class="material-symbols-outlined">smartphone</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-outline uppercase">15 Oct 2023 • 13:15</p>
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mt-1 group-hover:text-primary transition-colors">Vente #VT-2023-1046</h3>
+                            <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">person</span>
+                                M. Moussa Touré
+                            </p>
+                            <p class="font-body-md text-body-md text-on-surface-variant">3 articles • Mobile Money</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:flex-col md:items-end md:justify-center gap-2">
+                        <span class="font-headline-sm text-headline-sm text-primary">28,200 FCFA</span>
+                        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md">
+                            Complété
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sale Card 3 -->
+            <div class="bg-white rounded-xl p-md shadow-sm border border-outline-variant/20 hover:shadow-md transition-shadow cursor-pointer group">
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+                    <div class="flex gap-4">
+                        <div class="h-12 w-12 bg-primary-container rounded-lg flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">receipt</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-outline uppercase">15 Oct 2023 • 11:45</p>
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mt-1 group-hover:text-primary transition-colors">Vente #VT-2023-1045</h3>
+                            <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">person</span>
+                                Dr. Kouamé Brou
+                            </p>
+                            <p class="font-body-md text-body-md text-on-surface-variant">8 articles • Espèces</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:flex-col md:items-end md:justify-center gap-2">
+                        <span class="font-headline-sm text-headline-sm text-primary">125,800 FCFA</span>
+                        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md">
+                            Complété
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sale Card 4 - Cancelled -->
+            <div class="bg-white rounded-xl p-md shadow-sm border border-error-container/30 hover:shadow-md transition-shadow cursor-pointer group">
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+                    <div class="flex gap-4">
+                        <div class="h-12 w-12 bg-error-container rounded-lg flex items-center justify-center text-error">
+                            <span class="material-symbols-outlined">cancel</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-outline uppercase">15 Oct 2023 • 10:20</p>
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mt-1 group-hover:text-primary transition-colors">Vente #VT-2023-1044</h3>
+                            <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">person</span>
+                                Client anonyme
+                            </p>
+                            <p class="font-body-md text-body-md text-on-surface-variant">2 articles • Annulé</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:flex-col md:items-end md:justify-center gap-2">
+                        <span class="font-headline-sm text-headline-sm text-error">8,500 FCFA</span>
+                        <span class="bg-error-container text-on-error-container px-3 py-1 rounded-full font-label-md text-label-md">
+                            Annulé
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sale Card 5 -->
+            <div class="bg-white rounded-xl p-md shadow-sm border border-outline-variant/20 hover:shadow-md transition-shadow cursor-pointer group">
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+                    <div class="flex gap-4">
+                        <div class="h-12 w-12 bg-secondary-container rounded-lg flex items-center justify-center text-secondary">
+                            <span class="material-symbols-outlined">smartphone</span>
+                        </div>
+                        <div>
+                            <p class="font-label-md text-label-md text-outline uppercase">14 Oct 2023 • 18:30</p>
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mt-1 group-hover:text-primary transition-colors">Vente #VT-2023-1043</h3>
+                            <p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">person</span>
+                                Mme. Yasmine Diallo
+                            </p>
+                            <p class="font-body-md text-body-md text-on-surface-variant">4 articles • Mobile Money</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between md:flex-col md:items-end md:justify-center gap-2">
+                        <span class="font-headline-sm text-headline-sm text-primary">52,300 FCFA</span>
+                        <span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md">
+                            Complété
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BottomNavBar -->
+    <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-2 bg-surface-container shadow-lg border-t border-outline-variant">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="tableaudebordpharmacy.html">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span class="font-label-md text-label-md">Dashboard</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="gestiondestocks.html">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <span class="font-label-md text-label-md">Stock</span>
+        </a>
+        <a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-90 duration-200" href="caissesetvente.html">
+            <span class="material-symbols-outlined">shopping_cart</span>
+            <span class="font-label-md text-label-md">Sales</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="profile.html">
+            <span class="material-symbols-outlined">person</span>
+            <span class="font-label-md text-label-md">Profile</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="clients.html">
+            <span class="material-symbols-outlined">group</span>
+            <span class="font-label-md text-label-md">Clients</span>
+        </a>
+    </nav>
+    <script>
+        // Filtres de période
+        document.querySelectorAll('section.bg-white button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const text = this.textContent.trim();
+                alert('Filtre appliqué: ' + text);
+            });
+        });
+
+        // Recherche de transactions
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            console.log('Recherche transaction:', e.target.value);
+        });
+
+        // Clic sur les cartes de vente
+        document.querySelectorAll('.bg-white.rounded-xl').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('h3')?.textContent;
+                if (title) {
+                    alert('Détails de la vente: ' + title);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
