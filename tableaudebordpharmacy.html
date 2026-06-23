@@ -137,9 +137,9 @@
     }
   </style>
   </head>
-<body class="bg-background text-on-background min-h-screen pb-32">
+<body class="bg-background text-on-background min-h-screen flex">
 <!-- TopAppBar -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface shadow-sm">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter pl-24 h-16 bg-surface shadow-sm">
 <div class="flex items-center gap-sm">
 <button class="material-symbols-outlined text-primary p-2 hover:bg-surface-container-low transition-colors active:scale-95 duration-150" data-icon="menu">menu</button>
 <h1 class="font-headline-md-mobile text-headline-md-mobile font-bold text-primary">PharmaCare Admin</h1>
@@ -151,7 +151,7 @@
 </div>
 </div>
 </header>
-<main class="mt-20 px-gutter max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-md">
+<main class="flex-1 mt-20 ml-20 px-gutter max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-md">
 <!-- Today's Revenue (Chiffre d'affaires) -->
 <section class="md:col-span-12 lg:col-span-8">
 <div class="revenue-gradient rounded-xl p-xl text-on-primary shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
@@ -294,29 +294,26 @@
 </div>
 </section>
 </main>
-<!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe px-2 bg-surface-container shadow-lg rounded-t-xl border-t border-outline-variant">
-<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-5 py-1 active:scale-90 duration-200" href="#">
+<!-- Sidebar -->
+<nav class="fixed left-0 top-16 h-[calc(100vh-4rem)] w-20 z-50 flex flex-col items-center py-4 bg-surface-container shadow-lg border-r border-outline-variant">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-3 py-2 active:scale-90 duration-200 mb-4" href="#">
 <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-<span class="font-label-md text-label-md">Dashboard</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="gestiondestocks.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-3 hover:bg-surface-variant transition-all active:scale-90 duration-200 mb-2" href="gestiondestocks.html">
 <span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
-<span class="font-label-md text-label-md">Stock</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="caissesetvente.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-3 hover:bg-surface-variant transition-all active:scale-90 duration-200 mb-2" href="caissesetvente.html">
 <span class="material-symbols-outlined" data-icon="shopping_cart">shopping_cart</span>
-<span class="font-label-md text-label-md">Sales</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="profile.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-3 hover:bg-surface-variant transition-all active:scale-90 duration-200 mb-2" href="profile.html">
 <span class="material-symbols-outlined" data-icon="person">person</span>
-<span class="font-label-md text-label-md">Profile</span>
 </a>
-<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-2 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="gestionfournisseur.html">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-3 hover:bg-surface-variant transition-all active:scale-90 duration-200" href="gestionfournisseur.html">
 <span class="material-symbols-outlined">local_shipping</span>
-<span class="font-label-md text-label-md">Fournisseurs</span>
 </a>
 </nav>
+<script src="api.js"></script>
+<script src="buttons.js"></script>
 <script>
         // Micro-interactions and subtle effects
         document.querySelectorAll('.bento-card').forEach(card => {

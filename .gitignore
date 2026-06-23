@@ -12,3 +12,20 @@ Thumbs.db
 # Temporary Files
 *.tmp
 *.log
+
+# Database
+pharmacie.db
+
+# Environment
+.env
+
+# Dependencies
+node_modules/
+
+# Build
+dist/
+build/
+
+# Hosting
+.vercel/
+.netlify/
