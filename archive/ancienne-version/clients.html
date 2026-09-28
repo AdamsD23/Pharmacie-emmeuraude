@@ -1,0 +1,390 @@
+﻿<!DOCTYPE html>
+<html class="light" lang="fr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>PharmaGestion CI - Gestion des Clients</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#59de9b",
+                        "surface-variant": "#e2e2e5",
+                        "secondary-fixed-dim": "#cdc6b8",
+                        "tertiary": "#904d00",
+                        "on-tertiary-fixed-variant": "#6e3900",
+                        "primary": "#006d43",
+                        "surface": "#f9f9fc",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#2f3133",
+                        "outline": "#6d7a70",
+                        "outline-variant": "#bccabe",
+                        "tertiary-fixed-dim": "#ffb77d",
+                        "tertiary-container": "#dd7900",
+                        "on-secondary-fixed-variant": "#4b463c",
+                        "on-tertiary-fixed": "#2f1500",
+                        "on-secondary-container": "#696458",
+                        "inverse-primary": "#59de9b",
+                        "error": "#ba1a1a",
+                        "on-background": "#1a1c1e",
+                        "surface-container-highest": "#e2e2e5",
+                        "on-primary-fixed": "#002111",
+                        "primary-container": "#00a86b",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#3d4a41",
+                        "on-primary-fixed-variant": "#005232",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eeeef0",
+                        "on-surface": "#1a1c1e",
+                        "surface-container-high": "#e8e8ea",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed": "#ffdcc3",
+                        "secondary-fixed": "#e9e2d3",
+                        "on-secondary-fixed": "#1e1b13",
+                        "background": "#f9f9fc",
+                        "on-primary-container": "#00331d",
+                        "surface-container-low": "#f3f3f6",
+                        "inverse-on-surface": "#f0f0f3",
+                        "primary-fixed": "#78fbb6"
+                    },
+                    "fontFamily": {
+                        "sans": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 border-r border-outline-variant bg-surface py-4 z-50">
+    <div class="px-6 mb-8 flex items-center gap-3">
+        <img src="https://lh3.googleusercontent.com/aida/AP1WRLseQQ237-FB-esHBqMnNQA7ThFphUT4i7bBTiWhEF3pyb19sNnqRUjFE5b1pm5NrxFCyw1zksjAIU_z3lX01uGaKdyH_-S07B1AUB8WRM9wDSdlUyyOKbTu4M4Hq_TuNUPaJvo_D2NM_Jyx1LEeFTr8PqpxcRldy92ey6gT8a8ivNrtaapRXXPd6et-3Faa4S25HsheoRKxtmCB9HeeQLQACdGKUgPPj-fIrWDniRrpc_rAOGwQJE2Vz1I3" alt="PharmaGestion CI Logo" class="h-10 w-10 rounded-lg">
+        <div>
+            <h1 class="font-headline-sm text-headline-sm font-bold text-primary leading-none">PharmaGestion CI</h1>
+            <p class="font-label-sm text-label-sm text-on-surface-variant">Abidjan Plateau</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="tableaudebordpharmacy.html">
+            <img src="images/dashboard.svg" alt="Tableau de bord" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Tableau de bord</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="gestiondestocks.html">
+            <img src="images/inventory_2.svg" alt="Stock" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Stock</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="nouvellevente.html">
+            <img src="images/point_of_sale.svg" alt="Ventes" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Ventes</span>
+        </a>
+        <a class="flex items-center gap-3 text-primary bg-primary/10 transition-colors rounded-lg px-4 py-3 mx-2" href="clients.html">
+            <img src="images/people.svg" alt="Clients" class="w-5 h-5">
+            <span class="font-label-md text-label-md font-bold">Clients</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="commande.html">
+            <img src="images/shopping_cart.svg" alt="Commandes" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Commandes</span>
+        </a>
+    </nav>
+    <div class="mt-auto px-4 py-4 space-y-4 border-t border-outline-variant">
+        <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-2" href="profilutilisateur.html">
+            <img src="images/person.svg" alt="person" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Profil</span>
+        </a>
+        <a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-2" href="parametre.html">
+            <img src="images/settings.svg" alt="settings" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Paramètres</span>
+        </a>
+        <a class="flex items-center gap-3 text-error hover:bg-error-container/10 transition-colors rounded-lg px-4 py-2" href="dashboard.html">
+            <img src="images/logout.svg" alt="logout" class="w-5 h-5">
+            <span class="font-label-md text-label-md">Déconnexion</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="pt-20 md:ml-64 min-h-screen px-4 md:px-8 pb-24 md:pb-8">
+    <!-- Header -->
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="font-headline-lg text-headline-lg text-on-surface">Gestion des Clients</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant">Gérez votre base de clients et suivez leurs achats</p>
+        </div>
+        <button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md flex items-center gap-2 transition-transform active:scale-95">
+            <img src="images/person_add.svg" alt="Ajouter" class="w-4 h-4">
+            Nouveau Client
+        </button>
+    </header>
+
+    <!-- Stats Cards -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-xl bg-primary/10 text-primary">
+                    <img src="images/people.svg" alt="Clients" class="w-6 h-6">
+                </div>
+                <span class="text-on-surface-variant font-label-sm text-label-sm">Total Clients</span>
+            </div>
+            <p class="font-headline-md text-headline-md text-on-surface">1,234</p>
+            <p class="text-primary font-label-sm text-label-sm">+12% ce mois</p>
+        </div>
+        <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-xl bg-tertiary/10 text-tertiary">
+                    <img src="images/trending_up.svg" alt="Actifs" class="w-6 h-6">
+                </div>
+                <span class="text-on-surface-variant font-label-sm text-label-sm">Clients Actifs</span>
+            </div>
+            <p class="font-headline-md text-headline-md text-on-surface">856</p>
+            <p class="text-tertiary font-label-sm text-label-sm">69% du total</p>
+        </div>
+        <div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="p-3 rounded-xl bg-secondary/10 text-secondary">
+                    <img src="images/shopping_cart.svg" alt="Achats" class="w-6 h-6">
+                </div>
+                <span class="text-on-surface-variant font-label-sm text-label-sm">Achats ce mois</span>
+            </div>
+            <p class="font-headline-md text-headline-md text-on-surface">4,567</p>
+            <p class="text-secondary font-label-sm text-label-sm">+8% vs mois dernier</p>
+        </div>
+    </section>
+
+    <!-- Search and Filter -->
+    <div class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 mb-6 flex gap-4">
+        <div class="flex-1 relative">
+            <input type="text" placeholder="Rechercher un client..." class="w-full px-4 py-2 pl-10 rounded-lg border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/20">
+            <img src="images/search.svg" alt="Rechercher" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-on-surface-variant">
+        </div>
+        <button class="px-4 py-2 border border-outline-variant rounded-lg flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+            <img src="images/filter_list.svg" alt="Filtrer" class="w-4 h-4">
+            Filtrer
+        </button>
+    </div>
+
+    <!-- Clients Table -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant/30 overflow-hidden">
+        <table class="w-full">
+            <thead class="bg-surface-container-low">
+                <tr>
+                    <th class="px-6 py-4 text-left font-label-sm text-label-sm text-on-surface-variant">Client</th>
+                    <th class="px-6 py-4 text-left font-label-sm text-label-sm text-on-surface-variant">Email</th>
+                    <th class="px-6 py-4 text-left font-label-sm text-label-sm text-on-surface-variant">Téléphone</th>
+                    <th class="px-6 py-4 text-left font-label-sm text-label-sm text-on-surface-variant">Total Achats</th>
+                    <th class="px-6 py-4 text-center font-label-sm text-label-sm text-on-surface-variant">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="hover:bg-surface-container-lowest transition-colors border-b border-outline-variant/20">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <img src="images/person.svg" alt="Client" class="w-5 h-5 text-primary">
+                            </div>
+                            <div>
+                                <p class="font-label-md text-label-md text-on-surface">Kouassi Adama</p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant">Abidjan, Plateau</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">adama.kouassi@email.com</td>
+                    <td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">+225 07 00 00 00 00</td>
+                    <td class="px-6 py-4 font-currency-display text-currency-display text-on-surface text-right">125 000 FCFA</td>
+                    <td class="px-6 py-4 text-center">
+                        <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                            <img src="images/edit.svg" alt="Modifier" class="w-5 h-5">
+                        </button>
+                    </td>
+                </tr>
+                <tr class="hover:bg-surface-container-lowest transition-colors border-b border-outline-variant/20">
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-tertiary/10 rounded-lg flex items-center justify-center">
+                                <img src="images/person.svg" alt="Client" class="w-5 h-5 text-tertiary">
+                            </div>
+                            <div>
+                                <p class="font-label-md text-label-md text-on-surface">Yao Aya</p>
+                                <p class="font-label-sm text-label-sm text-on-surface-variant">Abidjan, Cocody</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">aya.yao@email.com</td>
+                    <td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">+225 07 11 11 11 11</td>
+                    <td class="px-6 py-4 font-currency-display text-currency-display text-on-surface text-right">89 500 FCFA</td>
+                    <td class="px-6 py-4 text-center">
+                        <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                            <img src="images/edit.svg" alt="Modifier" class="w-5 h-5">
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-card border-t border-outline-variant flex justify-around py-3 px-4 z-50">
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="tableaudebordpharmacy.html">
+        <img src="images/dashboard.svg" alt="Accueil" class="w-5 h-5">
+        <span class="text-[10px] font-label-sm">Accueil</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="gestiondestocks.html">
+        <img src="images/inventory_2.svg" alt="Stock" class="w-5 h-5">
+        <span class="text-[10px] font-label-sm">Stock</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-on-surface-variant" href="nouvellevente.html">
+        <img src="images/point_of_sale.svg" alt="Ventes" class="w-5 h-5">
+        <span class="text-[10px] font-label-sm">Ventes</span>
+    </a>
+    <a class="flex flex-col items-center gap-1 text-primary" href="clients.html">
+        <img src="images/people.svg" alt="Clients" class="w-5 h-5">
+        <span class="text-[10px] font-label-sm font-bold">Clients</span>
+        <div class="w-1 h-1 rounded-full bg-primary mt-0.5"></div>
+    </a>
+</nav>
+
+<script src="api.js"></script>
+<script>
+        const API_BASE = 'http://localhost:3000/api';
+        const token = localStorage.getItem('pharmacie_token');
+
+        async function loadClients() {
+            try {
+                if (!token) {
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/clients`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const clients = await response.json();
+                    console.log('Clients chargés:', clients);
+                }
+            } catch (error) {
+                console.error('Erreur de chargement des clients:', error);
+            }
+        }
+
+        loadClients();
+
+        // Fonctionnalité Clients
+        let clients = [
+            { name: 'Kouassi Adama', email: 'adama.kouassi@email.com', phone: '+225 07 00 00 00 00', address: 'Abidjan, Plateau', totalPurchases: 125000 },
+            { name: 'Yao Aya', email: 'aya.yao@email.com', phone: '+225 07 11 11 11 11', address: 'Abidjan, Cocody', totalPurchases: 89500 }
+        ];
+
+        function addClient() {
+            const name = prompt('Nom complet du client:');
+            const email = prompt('Email:');
+            const phone = prompt('Téléphone:');
+            const address = prompt('Adresse:');
+            
+            if (name && email && phone) {
+                clients.push({ name, email, phone, address, totalPurchases: 0 });
+                updateClientsTable();
+                alert('✅ Client ajouté avec succès !');
+            } else {
+                alert('❌ Veuillez remplir au moins le nom, email et téléphone');
+            }
+        }
+
+        function editClient(index) {
+            const client = clients[index];
+            const name = prompt('Nom complet:', client.name);
+            const email = prompt('Email:', client.email);
+            const phone = prompt('Téléphone:', client.phone);
+            
+            if (name && email && phone) {
+                clients[index] = { ...client, name, email, phone };
+                updateClientsTable();
+                alert('✅ Client modifié avec succès !');
+            }
+        }
+
+        function deleteClient(index) {
+            if (confirm('Confirmer la suppression du client ' + clients[index].name + '?')) {
+                clients.splice(index, 1);
+                updateClientsTable();
+                alert('✅ Client supprimé avec succès !');
+            }
+        }
+
+        function updateClientsTable() {
+            const tbody = document.querySelector('tbody');
+            if (tbody) {
+                tbody.innerHTML = clients.map((client, index) => `
+                    <tr class="hover:bg-surface-container-lowest transition-colors border-b border-outline-variant/20">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                    <img src="images/person.svg" alt="Client" class="w-5 h-5 text-primary">
+                                </div>
+                                <div>
+                                    <p class="font-label-md text-label-md text-on-surface">${client.name}</p>
+                                    <p class="font-label-sm text-label-sm text-on-surface-variant">${client.address}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">${client.email}</td>
+                        <td class="px-6 py-4 font-body-md text-body-md text-on-surface-variant">${client.phone}</td>
+                        <td class="px-6 py-4 font-currency-display text-currency-display text-on-surface text-right">${client.totalPurchases.toLocaleString()} FCFA</td>
+                        <td class="px-6 py-4 text-center">
+                            <button onclick="editClient(${index})" class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                                <img src="images/edit.svg" alt="Modifier" class="w-5 h-5">
+                            </button>
+                            <button onclick="deleteClient(${index})" class="p-2 text-on-surface-variant hover:text-error transition-colors">
+                                <img src="images/delete.svg" alt="Supprimer" class="w-5 h-5">
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // Recherche de clients
+        function searchClients() {
+            const searchInput = document.querySelector('input[type="text"]');
+            const searchTerm = searchInput.value.toLowerCase();
+            const rows = document.querySelectorAll('tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('input[type="text"]');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchClients);
+            }
+            
+            const addButton = document.querySelector('button');
+            if (addButton && addButton.textContent.includes('Nouveau Client')) {
+                addButton.addEventListener('click', addClient);
+            }
+        });
+    </script>
+</body>
+</html>
+

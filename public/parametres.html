@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Paramètres | Pharmacie Émeraude</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="bg-slate-50 text-slate-800" data-roles="admin">
+<main id="app-main" class="min-h-screen">
+    <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Paramètres</h1>
+            <p class="text-slate-500">Informations de la pharmacie, affichées dans le menu et sur les reçus.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-6 items-start">
+            <form id="settings-form" class="lg:col-span-3 bg-white rounded-2xl border border-slate-200 p-5">
+                <div id="fields" class="grid sm:grid-cols-2 gap-4"></div>
+                <div class="flex justify-end mt-6">
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">Enregistrer</button>
+                </div>
+            </form>
+
+            <section class="lg:col-span-2">
+                <h2 class="text-sm font-medium text-slate-500 mb-2">Aperçu du reçu</h2>
+                <div id="preview" class="bg-white rounded-2xl border border-dashed border-slate-300 p-5 font-mono text-xs leading-relaxed"></div>
+                <button type="button" id="print-test" class="mt-3 inline-flex items-center gap-2 text-sm text-brand-700 font-medium hover:underline">
+                    <span class="material-symbols-outlined" style="font-size:18px">print</span>Imprimer un reçu de test
+                </button>
+            </section>
+        </div>
+    </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+    const FIELDS = [
+        { name: 'nom_pharmacie', label: 'Nom de la pharmacie', required: true, full: true },
+        { name: 'adresse', label: 'Adresse', full: true },
+        { name: 'telephone', label: 'Téléphone' },
+        { name: 'message_recu', label: 'Message en bas du reçu', type: 'textarea', full: true }
+    ];
+    const form = document.getElementById('settings-form');
+
+    function sampleSale() {
+        return {
+            id: 1024, date: new Date().toISOString().slice(0, 19).replace('T', ' '), client_nom: 'Kouassi Awa', vendeur_nom: App.user.nom_complet || App.user.username,
+            statut: 'terminee', mode_paiement: 'especes', total: 4100, montant_recu: 5000,
+            lignes: [
+                { produit_nom: 'Paracétamol 500 mg', quantite: 2, prix_unitaire: 800, sous_total: 1600 },
+                { produit_nom: 'Sirop contre la toux 125 ml', quantite: 1, prix_unitaire: 2500, sous_total: 2500 }
+            ]
+        };
+    }
+
+    function renderPreview() {
+        const v = name => App.esc(form.elements[name].value);
+        document.getElementById('preview').innerHTML = `
+            <div class="text-center"><p class="font-bold text-sm">${v('nom_pharmacie')}</p><p>${v('adresse')}</p><p>${v('telephone')}</p></div>
+            <p class="mt-2">Reçu n° 1024 — ${App.datetime(sampleSale().date)}</p>
+            <hr class="my-2 border-dashed border-slate-400">
+            <p>Paracétamol 500 mg</p><p class="flex justify-between"><span>2 x 800</span><span>1 600</span></p>
+            <p>Sirop contre la toux 125 ml</p><p class="flex justify-between"><span>1 x 2 500</span><span>2 500</span></p>
+            <hr class="my-2 border-dashed border-slate-400">
+            <p class="flex justify-between font-bold text-sm"><span>TOTAL</span><span>4 100 FCFA</span></p>
+            <p class="text-center mt-3">${v('message_recu')}</p>`;
+    }
+
+    App.ready(async () => {
+        const settings = await App.api('/settings');
+        document.getElementById('fields').innerHTML = App.formFields(FIELDS, settings);
+        renderPreview();
+        form.addEventListener('input', renderPreview);
+
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const body = Object.fromEntries(FIELDS.map(f => [f.name, form.elements[f.name].value.trim() || null]));
+            try {
+                const saved = await App.api('/settings', { method: 'PUT', body });
+                document.querySelectorAll('[data-pharmacy-name]').forEach(el => { el.textContent = saved.nom_pharmacie; });
+                App.toast('Paramètres enregistrés');
+            } catch (error) {
+                App.toast(error.message, 'error');
+            }
+        });
+
+        document.getElementById('print-test').addEventListener('click', () => App.printReceipt(sampleSale(),
+            Object.fromEntries(FIELDS.map(f => [f.name, form.elements[f.name].value.trim()]))));
+    });
+</script>
+</body>
+</html>

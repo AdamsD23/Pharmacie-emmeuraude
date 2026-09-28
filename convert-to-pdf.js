@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
+const { PDFDocument } = require('pdf-lib');
 
 const htmlFiles = [
   'caissesetvente.html',
@@ -22,6 +23,7 @@ async function convertHtmlToPdf() {
   const page = await browser.newPage();
   
   const pdfPath = path.join(__dirname, 'pharmacie-emeraude-complet.pdf');
+  const pdfBuffers = [];
   
   for (const htmlFile of htmlFiles) {
     const filePath = path.join(__dirname, htmlFile);
@@ -33,36 +35,48 @@ async function convertHtmlToPdf() {
     
     console.log(`Conversion de: ${htmlFile}`);
     
-    const fileUrl = `file://${filePath}`;
-    await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 30000 });
-    
-    // Attendre un peu pour que tout soit chargé
-    await page.waitForTimeout(2000);
-    
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '1cm',
-        right: '1cm',
-        bottom: '1cm',
-        left: '1cm'
-      }
-    });
-    
-    // Ajouter le PDF au fichier principal
-    if (fs.existsSync(pdfPath)) {
-      const existingPdf = fs.readFileSync(pdfPath);
-      fs.writeFileSync(pdfPath, Buffer.concat([existingPdf, pdfBuffer]));
-    } else {
-      fs.writeFileSync(pdfPath, pdfBuffer);
+    try {
+      const fileUrl = `file://${filePath}`;
+      await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 30000 });
+      
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: {
+          top: '1cm',
+          right: '1cm',
+          bottom: '1cm',
+          left: '1cm'
+        }
+      });
+      
+      pdfBuffers.push(pdfBuffer);
+      console.log(`✓ ${htmlFile} converti`);
+    } catch (error) {
+      console.error(`Erreur avec ${htmlFile}:`, error.message);
     }
-    
-    console.log(`✓ ${htmlFile} converti`);
   }
   
   await browser.close();
-  console.log(`\nConversion terminée! PDF créé: ${pdfPath}`);
+  
+  if (pdfBuffers.length > 0) {
+    const mergedPdf = await PDFDocument.create();
+    
+    for (const buffer of pdfBuffers) {
+      const pdf = await PDFDocument.load(buffer);
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach(page => mergedPdf.addPage(page));
+    }
+    
+    const mergedPdfBuffer = await mergedPdf.save();
+    fs.writeFileSync(pdfPath, mergedPdfBuffer);
+    
+    console.log(`\nConversion terminée! PDF créé: ${pdfPath}`);
+  } else {
+    console.log('\nAucun fichier HTML n\'a été converti.');
+  }
 }
 
 convertHtmlToPdf().catch(console.error);

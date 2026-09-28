@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Stock | Pharmacie Émeraude</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+<main id="app-main" class="min-h-screen">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Stock</h1>
+                <p class="text-slate-500" id="summary">Chargement…</p>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" id="export" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium">
+                    <span class="material-symbols-outlined">download</span><span class="hidden sm:inline">Exporter</span>
+                </button>
+                <button type="button" id="add" data-need="pharmacien" class="hidden inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">
+                    <span class="material-symbols-outlined">add</span>Nouveau produit
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                <input id="search" type="search" placeholder="Rechercher un produit, une catégorie…" class="w-full pl-10 pr-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+            </div>
+            <select id="category" class="px-3 py-2.5 rounded-lg border border-slate-200 bg-white" aria-label="Catégorie">
+                <option value="">Toutes les catégories</option>
+            </select>
+            <div class="flex rounded-lg border border-slate-200 p-0.5 text-sm" role="group" aria-label="Filtre d'alerte">
+                <button type="button" data-alert="" class="px-3 py-1.5 rounded-md font-medium">Tous</button>
+                <button type="button" data-alert="stock" class="px-3 py-1.5 rounded-md font-medium">Stock faible</button>
+                <button type="button" data-alert="expiration" class="px-3 py-1.5 rounded-md font-medium">Péremption</button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="table-wrap">
+                <table class="w-full text-sm">
+                    <thead class="text-left text-slate-500 bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">Produit</th>
+                            <th class="px-4 py-3 font-medium">Catégorie</th>
+                            <th class="px-4 py-3 font-medium text-right">Prix</th>
+                            <th class="px-4 py-3 font-medium text-center">Stock</th>
+                            <th class="px-4 py-3 font-medium">Expiration</th>
+                            <th class="px-4 py-3 font-medium text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+    let products = [];
+    let suppliers = [];
+    const filters = { q: '', categorie: '', alerte: new URLSearchParams(location.search).get('alerte') || '' };
+
+    function stockBadge(p) {
+        if (p.stock === 0) return App.badge('Rupture', 'red');
+        if (p.stock_faible) return App.badge('Faible', 'amber');
+        return App.badge('OK', 'green');
+    }
+
+    function expiryCell(p) {
+        if (!p.date_expiration) return '<span class="text-slate-400">—</span>';
+        if (p.expire) return `<span class="text-red-700 font-medium">${App.date(p.date_expiration)}</span> ${App.badge('Expiré', 'red')}`;
+        if (p.expire_bientot) return `<span class="text-amber-800 font-medium">${App.date(p.date_expiration)}</span> ${App.badge('Bientôt', 'amber')}`;
+        return App.date(p.date_expiration);
+    }
+
+    function render() {
+        const canEdit = App.can('pharmacien');
+        document.querySelectorAll('[data-alert]').forEach(b => {
+            b.className = `px-3 py-1.5 rounded-md font-medium ${b.dataset.alert === filters.alerte ? 'bg-brand-700 text-white' : 'text-slate-600 hover:bg-slate-50'}`;
+        });
+        const value = products.reduce((s, p) => s + p.stock * p.prix, 0);
+        document.getElementById('summary').textContent = `${products.length} produit(s) · valeur du stock : ${App.fcfa(value)}`;
+
+        document.getElementById('rows').innerHTML = products.length ? products.map(p => `
+            <tr class="hover:bg-slate-50">
+                <td class="px-4 py-3">
+                    <p class="font-medium text-slate-900">${App.esc(p.nom)}</p>
+                    <p class="text-xs text-slate-500">${App.esc(p.fournisseur_nom || 'Sans fournisseur')}</p>
+                </td>
+                <td class="px-4 py-3 text-slate-600">${App.esc(p.categorie || '—')}</td>
+                <td class="px-4 py-3 text-right font-medium whitespace-nowrap">${App.fcfa(p.prix)}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center justify-center gap-2">
+                        ${canEdit ? `<button type="button" data-adjust="${p.id}" data-delta="-1" class="w-7 h-7 rounded-md border border-slate-200 hover:bg-slate-100" aria-label="Retirer 1">−</button>` : ''}
+                        <span class="w-10 text-center font-semibold">${p.stock}</span>
+                        ${canEdit ? `<button type="button" data-adjust="${p.id}" data-delta="1" class="w-7 h-7 rounded-md border border-slate-200 hover:bg-slate-100" aria-label="Ajouter 1">+</button>` : ''}
+                        ${stockBadge(p)}
+                    </div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">${expiryCell(p)}</td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                    ${canEdit ? `
+                        <button type="button" data-edit="${p.id}" class="w-9 h-9 rounded-lg hover:bg-slate-100 text-slate-600" aria-label="Modifier ${App.esc(p.nom)}"><span class="material-symbols-outlined">edit</span></button>
+                        <button type="button" data-delete="${p.id}" class="w-9 h-9 rounded-lg hover:bg-red-50 text-red-600" aria-label="Supprimer ${App.esc(p.nom)}"><span class="material-symbols-outlined">delete</span></button>`
+                        : `<a href="caisse.html?produit=${p.id}" class="text-brand-700 font-medium hover:underline">Vendre</a>`}
+                </td>
+            </tr>`).join('') : App.emptyRow(6, 'Aucun produit ne correspond à votre recherche.');
+    }
+
+    async function load() {
+        document.getElementById('rows').innerHTML = App.skeletonRows(6);
+        const params = new URLSearchParams();
+        Object.entries(filters).forEach(([k, v]) => v && params.set(k, v));
+        products = await App.api(`/products?${params}`);
+        render();
+    }
+
+    async function loadCategories() {
+        const cats = await App.api('/products/categories');
+        const select = document.getElementById('category');
+        select.innerHTML = '<option value="">Toutes les catégories</option>' + cats.map(c => `<option>${App.esc(c)}</option>`).join('');
+        select.value = filters.categorie;
+        return cats;
+    }
+
+    async function openForm(product) {
+        const cats = await App.api('/products/categories');
+        App.formModal({
+            title: product ? 'Modifier le produit' : 'Nouveau produit',
+            size: 'max-w-2xl',
+            values: product,
+            fields: [
+                { name: 'nom', label: 'Nom du produit', required: true, full: true, autofocus: true, placeholder: 'Ex : Paracétamol 500 mg (boîte de 16)' },
+                { name: 'categorie', label: 'Catégorie', placeholder: cats.length ? `Ex : ${cats[0]}` : 'Ex : Antalgique', help: cats.length ? `Existantes : ${cats.slice(0, 6).join(', ')}` : '' },
+                { name: 'fournisseur_id', label: 'Fournisseur', type: 'select', options: [['', '— Aucun —'], ...suppliers.map(s => [s.id, s.nom])] },
+                { name: 'prix', label: 'Prix de vente (FCFA)', type: 'number', required: true, min: 0, step: 5 },
+                { name: 'date_expiration', label: 'Date d\'expiration', type: 'date' },
+                { name: 'stock', label: 'Quantité en stock', type: 'number', required: true, min: 0, step: 1, value: 0 },
+                { name: 'stock_min', label: 'Seuil d\'alerte', type: 'number', min: 0, step: 1, value: 10, help: 'Une alerte s\'affiche en dessous de ce stock.' },
+                { name: 'description', label: 'Description', type: 'textarea', full: true }
+            ],
+            onSubmit: async data => {
+                if (product) await App.api(`/products/${product.id}`, { method: 'PUT', body: data });
+                else await App.api('/products', { method: 'POST', body: data });
+                App.toast(product ? 'Produit modifié' : 'Produit ajouté');
+                await Promise.all([load(), loadCategories()]);
+            }
+        });
+    }
+
+    App.ready(async () => {
+        if (App.can('pharmacien')) {
+            document.getElementById('add').classList.remove('hidden');
+            suppliers = await App.api('/suppliers');
+        }
+
+        const search = document.getElementById('search');
+        search.addEventListener('input', App.debounce(() => { filters.q = search.value.trim(); load(); }));
+        document.getElementById('category').addEventListener('change', e => { filters.categorie = e.target.value; load(); });
+        document.querySelectorAll('[data-alert]').forEach(b => b.addEventListener('click', () => { filters.alerte = b.dataset.alert; load(); }));
+        document.getElementById('add').addEventListener('click', () => openForm(null));
+
+        document.getElementById('export').addEventListener('click', () => App.csv(`stock-${App.today()}.csv`, products, [
+            { label: 'Produit', value: 'nom' },
+            { label: 'Catégorie', value: 'categorie' },
+            { label: 'Fournisseur', value: 'fournisseur_nom' },
+            { label: 'Prix (FCFA)', value: 'prix' },
+            { label: 'Stock', value: 'stock' },
+            { label: 'Seuil', value: 'stock_min' },
+            { label: 'Expiration', value: p => p.date_expiration ? App.date(p.date_expiration) : '' },
+            { label: 'Valeur (FCFA)', value: p => p.stock * p.prix }
+        ]));
+
+        document.getElementById('rows').addEventListener('click', async e => {
+            const edit = e.target.closest('[data-edit]');
+            const del = e.target.closest('[data-delete]');
+            const adjust = e.target.closest('[data-adjust]');
+            try {
+                if (edit) openForm(products.find(p => p.id === Number(edit.dataset.edit)));
+                if (del) {
+                    const p = products.find(x => x.id === Number(del.dataset.delete));
+                    if (await App.confirm(`Supprimer « ${p.nom} » ?`, { danger: true, confirmLabel: 'Supprimer' })) {
+                        await App.api(`/products/${p.id}`, { method: 'DELETE' });
+                        App.toast('Produit supprimé');
+                        load();
+                    }
+                }
+                if (adjust) {
+                    const updated = await App.api(`/products/${adjust.dataset.adjust}/stock`, { method: 'PATCH', body: { variation: Number(adjust.dataset.delta) } });
+                    products = products.map(p => p.id === updated.id ? updated : p);
+                    render();
+                }
+            } catch (error) {
+                App.toast(error.message, 'error');
+            }
+        });
+
+        await loadCategories();
+        await load();
+    });
+</script>
+</body>
+</html>

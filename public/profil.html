@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mon profil | Pharmacie Émeraude</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+<main id="app-main" class="min-h-screen">
+    <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Mon profil</h1>
+            <p class="text-slate-500">Vos informations et votre mot de passe.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <form id="profile-form" class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+                <div class="flex items-center gap-4">
+                    <span id="avatar" class="w-14 h-14 rounded-full bg-brand-700 text-white text-lg font-bold flex items-center justify-center"></span>
+                    <div>
+                        <p id="username" class="font-semibold text-slate-900"></p>
+                        <p id="role" class="text-sm text-slate-500"></p>
+                    </div>
+                </div>
+                <div>
+                    <label for="nom_complet" class="block text-sm font-medium text-slate-700 mb-1">Nom complet</label>
+                    <input id="nom_complet" name="nom_complet" maxlength="150" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                    <input id="email" name="email" type="email" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                </div>
+                <p id="last-login" class="text-xs text-slate-500"></p>
+                <button type="submit" class="px-5 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">Enregistrer</button>
+            </form>
+
+            <form id="password-form" class="bg-white rounded-2xl border border-slate-200 p-5 space-y-4">
+                <h2 class="font-semibold text-slate-900 flex items-center gap-2"><span class="material-symbols-outlined">key</span>Changer de mot de passe</h2>
+                <div>
+                    <label for="ancien" class="block text-sm font-medium text-slate-700 mb-1">Mot de passe actuel</label>
+                    <input id="ancien" name="ancien" type="password" required autocomplete="current-password" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                </div>
+                <div>
+                    <label for="nouveau" class="block text-sm font-medium text-slate-700 mb-1">Nouveau mot de passe</label>
+                    <input id="nouveau" name="nouveau" type="password" required minlength="8" autocomplete="new-password" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                    <p class="text-xs text-slate-500 mt-1">8 caractères minimum.</p>
+                </div>
+                <div>
+                    <label for="confirmation" class="block text-sm font-medium text-slate-700 mb-1">Confirmer le nouveau mot de passe</label>
+                    <input id="confirmation" name="confirmation" type="password" required autocomplete="new-password" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                </div>
+                <button type="submit" class="px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-semibold">Modifier le mot de passe</button>
+            </form>
+        </div>
+
+        <!-- Gestion des comptes (admin) -->
+        <section id="users-section" class="hidden bg-white rounded-2xl border border-slate-200">
+            <div class="flex flex-wrap items-center justify-between gap-3 p-5 pb-3">
+                <div>
+                    <h2 class="font-semibold text-slate-900">Comptes utilisateurs</h2>
+                    <p class="text-sm text-slate-500">Vendeur : caisse et clients · Pharmacien : + stock, fournisseurs, commandes, annulations · Admin : tout.</p>
+                </div>
+                <button type="button" id="add-user" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">
+                    <span class="material-symbols-outlined">person_add</span>Nouveau compte
+                </button>
+            </div>
+            <div class="table-wrap">
+                <table class="w-full text-sm">
+                    <thead class="text-left text-slate-500 bg-slate-50 border-y border-slate-100">
+                        <tr><th class="px-5 py-2 font-medium">Utilisateur</th><th class="px-5 py-2 font-medium">Rôle</th><th class="px-5 py-2 font-medium">Dernière connexion</th><th class="px-5 py-2 font-medium">État</th><th class="px-5 py-2"></th></tr>
+                    </thead>
+                    <tbody id="users" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+    let users = [];
+    const ROLE_OPTIONS = Object.entries(App.ROLE_LABELS);
+
+    function renderProfile(user) {
+        document.getElementById('avatar').textContent = (user.nom_complet || user.username).split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+        document.getElementById('username').textContent = user.nom_complet || user.username;
+        document.getElementById('role').textContent = `@${user.username} · ${App.ROLE_LABELS[user.role]}`;
+        document.getElementById('nom_complet').value = user.nom_complet || '';
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('last-login').textContent = user.derniere_connexion ? `Dernière connexion : ${App.datetime(user.derniere_connexion)}` : '';
+    }
+
+    function renderUsers() {
+        document.getElementById('users').innerHTML = users.map(u => `
+            <tr>
+                <td class="px-5 py-3"><p class="font-medium text-slate-900">${App.esc(u.nom_complet || u.username)}</p><p class="text-xs text-slate-500">@${App.esc(u.username)}${u.email ? ' · ' + App.esc(u.email) : ''}</p></td>
+                <td class="px-5 py-3">${App.badge(App.ROLE_LABELS[u.role], u.role === 'admin' ? 'blue' : 'slate')}</td>
+                <td class="px-5 py-3 text-slate-500 whitespace-nowrap">${u.derniere_connexion ? App.datetime(u.derniere_connexion) : 'Jamais'}</td>
+                <td class="px-5 py-3">${u.actif ? App.badge('Actif', 'green') : App.badge('Désactivé', 'red')}</td>
+                <td class="px-5 py-3 text-right whitespace-nowrap">
+                    <button type="button" data-edit="${u.id}" class="w-9 h-9 rounded-lg hover:bg-slate-100 text-slate-600" aria-label="Modifier"><span class="material-symbols-outlined">edit</span></button>
+                    ${u.id !== App.user.id ? `<button type="button" data-delete="${u.id}" class="w-9 h-9 rounded-lg hover:bg-red-50 text-red-600" aria-label="Supprimer"><span class="material-symbols-outlined">delete</span></button>` : ''}
+                </td>
+            </tr>`).join('');
+    }
+
+    async function loadUsers() {
+        users = await App.api('/users');
+        renderUsers();
+    }
+
+    function openUserForm(user) {
+        App.formModal({
+            title: user ? `Modifier @${user.username}` : 'Nouveau compte',
+            values: user ? { ...user, actif: user.actif ? 'true' : 'false' } : { role: 'vendeur' },
+            fields: [
+                ...(user ? [] : [{ name: 'username', label: 'Identifiant', required: true, autofocus: true, placeholder: 'ex : aicha.k', help: 'Lettres, chiffres, point, tiret.' }]),
+                { name: 'nom_complet', label: 'Nom complet' },
+                { name: 'email', label: 'Email', type: 'email' },
+                { name: 'role', label: 'Rôle', type: 'select', required: true, options: ROLE_OPTIONS },
+                ...(user ? [{ name: 'actif', label: 'État', type: 'select', options: [['true', 'Actif'], ['false', 'Désactivé']] }] : []),
+                { name: 'password', label: user ? 'Nouveau mot de passe' : 'Mot de passe', type: 'password', required: !user, minlength: 8, autocomplete: 'new-password', help: user ? 'Laisser vide pour ne pas le changer.' : '8 caractères minimum.' }
+            ],
+            onSubmit: async data => {
+                if (user) {
+                    await App.api(`/users/${user.id}`, { method: 'PUT', body: { ...data, actif: data.actif === 'true' } });
+                    App.toast('Compte modifié');
+                } else {
+                    await App.api('/users', { method: 'POST', body: data });
+                    App.toast('Compte créé');
+                }
+                await loadUsers();
+            }
+        });
+    }
+
+    App.ready(async () => {
+        renderProfile(App.user);
+
+        document.getElementById('profile-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            try {
+                const updated = await App.api('/auth/me', {
+                    method: 'PUT',
+                    body: { nom_complet: e.target.nom_complet.value.trim() || null, email: e.target.email.value.trim() || null }
+                });
+                App.user = updated;
+                renderProfile(updated);
+                App.toast('Profil enregistré');
+            } catch (error) {
+                App.toast(error.message, 'error');
+            }
+        });
+
+        document.getElementById('password-form').addEventListener('submit', async e => {
+            e.preventDefault();
+            const f = e.target;
+            if (f.nouveau.value !== f.confirmation.value) return App.toast('Les deux mots de passe ne correspondent pas', 'error');
+            try {
+                await App.api('/auth/password', { method: 'PUT', body: { ancien: f.ancien.value, nouveau: f.nouveau.value } });
+                f.reset();
+                App.toast('Mot de passe modifié');
+            } catch (error) {
+                App.toast(error.message, 'error');
+            }
+        });
+
+        if (App.user.role === 'admin') {
+            document.getElementById('users-section').classList.remove('hidden');
+            document.getElementById('add-user').addEventListener('click', () => openUserForm(null));
+            document.getElementById('users').addEventListener('click', async e => {
+                const edit = e.target.closest('[data-edit]');
+                const del = e.target.closest('[data-delete]');
+                try {
+                    if (edit) openUserForm(users.find(u => u.id === Number(edit.dataset.edit)));
+                    if (del) {
+                        const u = users.find(x => x.id === Number(del.dataset.delete));
+                        if (await App.confirm(`Supprimer le compte @${u.username} ? Vous pouvez aussi simplement le désactiver.`, { danger: true, confirmLabel: 'Supprimer' })) {
+                            await App.api(`/users/${u.id}`, { method: 'DELETE' });
+                            App.toast('Compte supprimé');
+                            loadUsers();
+                        }
+                    }
+                } catch (error) {
+                    App.toast(error.message, 'error');
+                }
+            });
+            await loadUsers();
+        }
+    });
+</script>
+</body>
+</html>

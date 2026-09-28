@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profil Pharmacien | PharmaGestion CI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#00a86b",
+                    "on-surface-variant": "#3d4a41",
+                    "tertiary-fixed-dim": "#ffb77d",
+                    "on-secondary-fixed-variant": "#4b463c",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#005232",
+                    "secondary-fixed-dim": "#cdc6b8",
+                    "outline": "#6d7a70",
+                    "on-tertiary-fixed": "#2f1500",
+                    "secondary": "#635e53",
+                    "surface-container-highest": "#e2e2e5",
+                    "tertiary": "#904d00",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#696458",
+                    "on-primary-container": "#00331d",
+                    "secondary-fixed": "#e9e2d3",
+                    "background": "#f9f9fc",
+                    "inverse-on-surface": "#f0f0f3",
+                    "surface-container": "#eeeef0",
+                    "on-tertiary": "#ffffff",
+                    "on-surface": "#1a1c1e",
+                    "surface-dim": "#dadadc",
+                    "primary-fixed-dim": "#59de9b",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffdcc3",
+                    "surface-tint": "#006d43",
+                    "surface-container-high": "#e8e8ea",
+                    "primary": "#006d43",
+                    "on-secondary-fixed": "#1e1b13",
+                    "on-primary-fixed": "#002111",
+                    "outline-variant": "#bccabe",
+                    "on-tertiary-fixed-variant": "#6e3900",
+                    "on-tertiary-container": "#462200",
+                    "surface-container-low": "#f3f3f6",
+                    "secondary-container": "#e9e2d3",
+                    "inverse-surface": "#2f3133",
+                    "surface-bright": "#f9f9fc",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#59de9b",
+                    "on-primary": "#ffffff",
+                    "tertiary-container": "#dd7900",
+                    "error": "#ba1a1a",
+                    "surface": "#f9f9fc",
+                    "on-background": "#1a1c1e",
+                    "primary-fixed": "#78fbb6",
+                    "surface-variant": "#e2e2e5",
+                    "on-secondary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "grid-margin": "20px",
+                    "container-padding": "20px",
+                    "unit": "4px",
+                    "grid-gutter": "12px",
+                    "stack-gap": "16px",
+                    "element-gap": "8px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "currency-display": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "currency-display": ["22px", {"lineHeight": "28px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f9f9fc;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .sidebar-active {
+            background-color: #00a86b;
+            color: #00331d;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .status-chip-stock {
+            background-color: rgba(0, 168, 107, 0.1);
+            color: #006d43;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-4 z-40 hidden md:flex">
+<div class="px-6 mb-8">
+<img alt="PharmaGestion CI Logo" class="h-12 w-12 mb-2" src="https://lh3.googleusercontent.com/aida/AP1WRLseQQ237-FB-esHBqMnNQA7ThFphUT4i7bBTiWhEF3pyb19sNnqRUjFE5b1pm5NrxFCyw1zksjAIU_z3lX01uGaKdyH_-S07B1AUB8WRM9wDSdlUyyOKbTu4M4Hq_TuNUPaJvo_D2NM_Jyx1LEeFTr8PqpxcRldy92ey6gT8a8ivNrtaapRXXPd6et-3Faa4S25HsheoRKxtmCB9HeeQLQACdGKUgPPj-fIrWDniRrpc_rAOGwQJE2Vz1I3"/>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">PharmaGestion CI</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Abidjan Plateau</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="tableaudebordpharmacy.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Tableau de bord</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="gestiondestocks.html">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Inventaire</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="nouvellevente.html">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="font-label-md text-label-md">Ventes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="commande.html">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-md text-label-md">Commandes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="clients.html">
+<span class="material-symbols-outlined">people</span>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-4">
+<a class="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 mx-2 font-bold shadow-sm" href="profilutilisateur.html">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="font-label-md text-label-md">Profil</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="parametre.html">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Paramètres</span>
+</a>
+<a class="flex items-center gap-3 text-error hover:bg-error-container transition-colors rounded-lg px-4 py-3 mx-2" href="dashboard.html">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Déconnexion</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 md:ml-64 bg-background min-h-screen">
+<header class="fixed top-0 right-0 left-0 md:left-64 z-30 flex justify-between items-center px-6 py-3 bg-surface/70 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-4">
+<button class="md:hidden p-2 hover:bg-surface-container-low rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="relative group hidden sm:block">
+<span class="absolute inset-y-0 left-3 flex items-center text-outline">
+<span class="material-symbols-outlined">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary w-64 transition-all" placeholder="Rechercher..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-surface-container-low rounded-full p-2 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+<button class="hover:bg-surface-container-low rounded-full p-2">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="font-label-md text-label-md text-on-surface">Dr. Koffi Kouadio</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Pharmacien Titulaire</p>
+</div>
+<a href="profilutilisateur.html" class="hover:ring-2 hover:ring-primary transition-all rounded-full">
+<img class="h-10 w-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a middle-aged Ivorian man wearing a crisp white laboratory coat and a stethoscope around his neck. He has a warm, confident smile and short dark hair. The background is a brightly lit, modern medical setting with out-of-focus pharmacy shelves. The lighting is soft and professional, echoing a clean corporate healthcare aesthetic with high-key whites and subtle emerald green accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-P8TKsB9Lsn-k3D0fm0DZhbVzBmW2BaCTdnRASIY2u2iO25GnhPwLVceOZ9EPzTcWQiTuJZzXfUqmVcZ7tpAuf4Ra2NfvOycTZSrSNv17pqlKvNh4UXB6FXe-PKrB5rP1MZ0xPPlW4JXwuQdxairX6EsUnHjM0dhsZTdLNYbgFOH18CbG-L99YL9aonLLbxwTSiyJnSbb765TC-DcScxcCLtqrg1lrzAoBAL8thDK-QcEsX8tvVPAMA"/>
+</a>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="pt-24 px-6 pb-12 max-w-7xl mx-auto">
+<!-- Page Header Area -->
+<div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div class="flex items-center gap-6">
+<div class="relative">
+<img class="h-28 w-28 rounded-2xl shadow-lg border-4 border-white object-cover" data-alt="A professional close-up of an experienced pharmacist with a friendly expression, wearing a clean medical uniform in a bright, modern pharmacy environment. The lighting is crisp and airy, emphasizing professional clarity and trust. The overall visual style is high-end corporate with a palette of soft whites, light grays, and deep emerald greens, characteristic of advanced healthcare facilities." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCixwkSy_C_TEE4fVyRaE2y90hZ59hbcyZcqfoOWonK6rbj-GyyT67HIEuTm54JXmyk9tSzvdzRAhmRayMlo-IWFz57zErCzYG48_14Y17mq9YGXkLIQpJoqCEdzOA03dGR7CrBALAbYUIRSfUHCD45K80_oYvqvN29WG3ZvM5uy4J3K2yadVYg3i7DqfgYWS-rsuqYiNjvnwtPV0ucHY4IUWI8y5eLxnOeoIX80-6E0UifKi-GdFPo0w"/>
+<button class="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-lg shadow-md hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Dr. Koffi Kouadio</h2>
+<p class="text-primary font-headline-sm text-headline-sm">Pharmacien Titulaire</p>
+<div class="flex items-center gap-2 mt-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">local_pharmacy</span>
+<span class="font-body-sm text-body-sm">Pharmacie de la Pyramide, Plateau</span>
+</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">Exporter Profil</button>
+<button class="px-6 py-2 bg-primary text-white rounded-lg font-label-md text-label-md shadow-sm hover:opacity-90 transition-opacity">Modifier les Infos</button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Section 1: Activity Summary (Hero Cards) -->
+<div class="md:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="glass-panel p-6 rounded-xl shadow-sm flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Ventes aujourd'hui</p>
+<h3 class="font-headline-md text-headline-md text-primary mt-1">142,500 <span class="font-label-sm">FCFA</span></h3>
+<p class="font-label-sm text-label-sm text-on-primary-container bg-primary-container/20 px-2 py-0.5 rounded-full inline-block mt-2">+12% vs hier</p>
+</div>
+<div class="h-12 w-12 rounded-full bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[32px]">payments</span>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl shadow-sm flex items-center justify-between">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Ordonnances traitées</p>
+<h3 class="font-headline-md text-headline-md text-on-surface mt-1">47</h3>
+<p class="font-label-sm text-label-sm text-tertiary bg-tertiary-fixed/40 px-2 py-0.5 rounded-full inline-block mt-2">8 en attente</p>
+</div>
+<div class="h-12 w-12 rounded-full bg-tertiary-fixed/30 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[32px]">prescriptions</span>
+</div>
+</div>
+</div>
+<!-- Section 2: Personal Info -->
+<div class="md:col-span-4 md:row-span-2 glass-panel p-6 rounded-xl shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">person_outline</span>
+<h4 class="font-headline-sm text-headline-sm">Informations Personnelles</h4>
+</div>
+<div class="space-y-5">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">E-mail Professionnel</p>
+<p class="font-body-md text-body-md font-medium text-on-surface">koffi.kouadio@pharmagestion.ci</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Numéro de Téléphone</p>
+<p class="font-body-md text-body-md font-medium text-on-surface">+225 07 08 09 10 11</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Numéro de CNI</p>
+<p class="font-body-md text-body-md font-medium text-on-surface">C 0123 4567 89</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Date d'embauche</p>
+<p class="font-body-md text-body-md font-medium text-on-surface">15 Mars 2018</p>
+</div>
+<hr class="border-outline-variant"/>
+<div class="pt-2">
+<button class="text-primary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                                Voir le dossier complet <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Section 3: Professional Credentials -->
+<div class="md:col-span-8 glass-panel p-6 rounded-xl shadow-sm">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<h4 class="font-headline-sm text-headline-sm">Identifiants Professionnels</h4>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
+<div class="flex items-start gap-4">
+<div class="p-3 bg-primary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">badge</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Numéro d'Ordre (CNOP)</p>
+<p class="font-body-md text-body-md font-bold text-on-surface">CI-7482-PH</p>
+<p class="font-label-sm text-label-sm text-primary">Validé jusqu'en 2025</p>
+</div>
+</div>
+<div class="flex items-start gap-4">
+<div class="p-3 bg-primary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-primary">school</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Spécialisation</p>
+<p class="font-body-md text-body-md font-bold text-on-surface">Pharmacologie Clinique</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">UFHB Abidjan</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 4: Security & Access -->
+<div class="md:col-span-7 glass-panel p-6 rounded-xl shadow-sm">
+<div class="flex items-center justify-between mb-6">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">security</span>
+<h4 class="font-headline-sm text-headline-sm">Sécurité &amp; Accès</h4>
+</div>
+<button class="text-primary font-label-sm text-label-sm border border-primary px-3 py-1 rounded-full hover:bg-primary-container/10 transition-colors">
+                            Changer le mot de passe
+                        </button>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">laptop_mac</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Session Actuelle (Chrome / Windows)</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">192.168.1.15 • En ligne</p>
+</div>
+</div>
+<span class="text-primary text-[10px] uppercase font-bold tracking-widest bg-primary-container/20 px-2 py-1 rounded">Actif</span>
+</div>
+<div class="flex items-center justify-between p-3 border border-outline-variant border-dashed rounded-lg">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">smartphone</span>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Application Mobile (iPhone 14)</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Abidjan • Il y a 2 heures</p>
+</div>
+</div>
+<button class="text-error hover:underline font-label-sm text-label-sm">Déconnecter</button>
+</div>
+</div>
+</div>
+<!-- Section 5: Stats/Mini-Chart -->
+<div class="md:col-span-5 glass-panel p-6 rounded-xl shadow-sm flex flex-col justify-between">
+<div>
+<h4 class="font-headline-sm text-headline-sm mb-1">Performance Hebdomadaire</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-6">Volume de prescriptions traitées</p>
+<div class="flex items-end gap-2 h-32 mb-2">
+<div class="flex-1 bg-primary-container/20 rounded-t-sm h-[60%] transition-all hover:bg-primary" title="Lun: 32"></div>
+<div class="flex-1 bg-primary-container/20 rounded-t-sm h-[80%] transition-all hover:bg-primary" title="Mar: 45"></div>
+<div class="flex-1 bg-primary-container/20 rounded-t-sm h-[75%] transition-all hover:bg-primary" title="Mer: 41"></div>
+<div class="flex-1 bg-primary-container/20 rounded-t-sm h-[90%] transition-all hover:bg-primary" title="Jeu: 52"></div>
+<div class="flex-1 bg-primary-container rounded-t-sm h-[100%] transition-all" title="Ven: 60"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-t-sm h-[30%]"></div>
+<div class="flex-1 bg-outline-variant/30 rounded-t-sm h-[20%]"></div>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant font-bold px-1 uppercase">
+<span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm">Objectif mensuel</span>
+<span class="font-label-md text-label-md text-primary">82% atteint</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav Shell (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t-0 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50 px-6 py-2 flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Dashboard</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px] font-bold">Stock</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary relative" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-bold">Profil</span>
+<span class="absolute -bottom-1 w-1 h-1 bg-primary rounded-full"></span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-bold">Réglages</span>
+</a>
+</nav>
+<!-- Floating Action Button (Only relevant on main pages) -->
+<button class="fixed bottom-24 right-6 md:bottom-8 md:right-8 bg-primary text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<script>
+        // Simple Micro-interaction for cards
+        document.querySelectorAll('.glass-panel').forEach(card => {
+            card.addEventListener('mousedown', () => {
+                card.style.transform = 'scale(0.98)';
+                card.style.transition = 'transform 0.1s ease';
+            });
+            card.addEventListener('mouseup', () => {
+                card.style.transform = 'scale(1)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.classList.add('w-80');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.classList.remove('w-80');
+        });
+    </script>
+</body></html>

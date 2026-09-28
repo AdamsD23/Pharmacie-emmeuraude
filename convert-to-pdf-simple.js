@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const pdf = require('html-pdf');
+const { PDFDocument } = require('pdf-lib');
+const puppeteer = require('puppeteer');
 
 const htmlFiles = [
   'caissesetvente.html',
@@ -18,7 +19,11 @@ const htmlFiles = [
 async function convertHtmlToPdf() {
   console.log('Démarrage de la conversion HTML vers PDF...');
   
+  const browser = await puppeteer.launch({ headless: 'new' });
+  const page = await browser.newPage();
+  
   const pdfPath = path.join(__dirname, 'pharmacie-emeraude-complet.pdf');
+  const pdfBuffers = [];
   
   for (const htmlFile of htmlFiles) {
     const filePath = path.join(__dirname, htmlFile);
@@ -31,47 +36,47 @@ async function convertHtmlToPdf() {
     console.log(`Conversion de: ${htmlFile}`);
     
     try {
-      const html = fs.readFileSync(filePath, 'utf8');
+      const fileUrl = `file://${filePath}`;
+      await page.goto(fileUrl, { waitUntil: 'networkidle0', timeout: 30000 });
       
-      const options = {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const pdfBuffer = await page.pdf({
         format: 'A4',
-        border: {
+        printBackground: true,
+        margin: {
           top: '1cm',
           right: '1cm',
           bottom: '1cm',
           left: '1cm'
         }
-      };
-      
-      await new Promise((resolve, reject) => {
-        pdf.create(html, options).toFile(pdfPath, (err, res) => {
-          if (err) {
-            // Si le fichier existe déjà, on l'ajoute
-            if (fs.existsSync(pdfPath)) {
-              const existingPdf = fs.readFileSync(pdfPath);
-              pdf.create(html, options).toBuffer((err, buffer) => {
-                if (err) reject(err);
-                else {
-                  fs.writeFileSync(pdfPath, Buffer.concat([existingPdf, buffer]));
-                  resolve();
-                }
-              });
-            } else {
-              reject(err);
-            }
-          } else {
-            resolve();
-          }
-        });
       });
       
+      pdfBuffers.push(pdfBuffer);
       console.log(`✓ ${htmlFile} converti`);
     } catch (error) {
       console.error(`Erreur avec ${htmlFile}:`, error.message);
     }
   }
   
-  console.log(`\nConversion terminée! PDF créé: ${pdfPath}`);
+  await browser.close();
+  
+  if (pdfBuffers.length > 0) {
+    const mergedPdf = await PDFDocument.create();
+    
+    for (const buffer of pdfBuffers) {
+      const pdf = await PDFDocument.load(buffer);
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach(page => mergedPdf.addPage(page));
+    }
+    
+    const mergedPdfBuffer = await mergedPdf.save();
+    fs.writeFileSync(pdfPath, mergedPdfBuffer);
+    
+    console.log(`\nConversion terminée! PDF créé: ${pdfPath}`);
+  } else {
+    console.log('\nAucun fichier HTML n\'a été converti.');
+  }
 }
 
 convertHtmlToPdf().catch(console.error);

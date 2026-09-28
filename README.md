@@ -1,227 +1,109 @@
-# Pharmacie Émeraude - Système de Gestion de Pharmacie
+# Pharmacie Émeraude — Gestion de pharmacie (v3)
 
-Système complet de gestion de pharmacie avec interface moderne et backend robuste.
+Application web complète de gestion d'officine : **stock, caisse, clients, fournisseurs, commandes et statistiques**.
+Projet réalisé dans le cadre de Simplon Côte d'Ivoire.
 
-## 🚀 Fonctionnalités
+**Stack** : Node.js · Express · MySQL · JWT · Tailwind CSS · JavaScript (sans framework)
 
-- **Gestion des Stocks**: Suivi en temps réel des médicaments et alertes de stock
-- **Gestion des Ventes**: Enregistrement des ventes et suivi du chiffre d'affaires
-- **Gestion des Clients**: Base de données clients et historique
-- **Gestion des Fournisseurs**: Suivi des fournisseurs et commandes
-- **Dashboard**: Tableau de bord avec statistiques en temps réel
-- **Authentification**: Système de connexion sécurisé avec JWT
-- **Interface Responsive**: Design moderne adapté mobile/desktop
+## Fonctionnalités
 
-## 🛠️ Technologies
+| Module | Ce qu'on peut faire |
+|---|---|
+| **Tableau de bord** | CA du jour et du mois, graphique 7/30 jours, alertes de rupture et de péremption, dernières ventes, top produits |
+| **Caisse** | Recherche instantanée (Entrée = ajouter), panier multi-produits, client, paiement Espèces / Wave / Orange / MTN / Moov / Carte, calcul de la monnaie, reçu imprimable |
+| **Ventes** | Historique filtrable par période, détail, réimpression du reçu, annulation (le stock est restauré), export CSV |
+| **Stock** | Ajout / modification, ajustement rapide ±1, filtres (catégorie, stock faible, péremption), valeur du stock, export CSV |
+| **Clients** | Fiche avec historique d'achats et total dépensé, lien WhatsApp direct, export CSV |
+| **Fournisseurs** | Coordonnées, nombre de produits et de commandes |
+| **Commandes** | Commande multi-produits, suggestion automatique des produits en stock faible, réception qui **ajoute le stock** |
+| **Comptes** | 3 rôles (admin, pharmacien, vendeur), désactivation immédiate d'un compte, changement de mot de passe |
+| **Paramètres** | Nom, adresse, téléphone et message affichés sur les reçus |
 
-- **Frontend**: HTML5, TailwindCSS, JavaScript
-- **Backend**: Node.js, Express
-- **Base de données**: SQLite
-- **Authentification**: JWT (JSON Web Tokens)
-- **Hébergement**: Vercel/Netlify ready
+### Droits par rôle
 
-## 📦 Installation
+| | Vendeur | Pharmacien | Admin |
+|---|:-:|:-:|:-:|
+| Caisse, clients, consulter le stock et les ventes | ✅ | ✅ | ✅ |
+| Gérer le stock, fournisseurs, commandes, annuler une vente | | ✅ | ✅ |
+| Comptes utilisateurs, paramètres | | | ✅ |
 
-### Prérequis
-- Node.js (v14 ou supérieur)
-- npm ou yarn
+### Sécurité
+- Toutes les routes de l'API exigent une connexion ; les droits sont vérifiés côté serveur.
+- Mots de passe hachés (bcrypt), sessions JWT de 12 h, compte désactivé = accès coupé immédiatement.
+- Limitation des tentatives de connexion (10 / 15 min), requêtes SQL paramétrées.
+- Seul le dossier `public/` est servi : `.env` et le code serveur ne sont jamais accessibles.
+- Les ventes et commandes utilisent des transactions (le stock ne peut pas devenir négatif, même avec deux caisses).
 
-### Étapes d'installation
+## Lancer en local
 
-1. **Cloner le repository**
-```bash
-git clone <repository-url>
-cd pharmacie-emeraude
-```
+Prérequis : **Node.js 18+** et **MySQL** (par exemple celui de XAMPP).
 
-2. **Installer les dépendances**
 ```bash
 npm install
-```
-
-3. **Configurer les variables d'environnement**
-```bash
-cp .env.example .env
-# Éditer .env avec vos configurations
-```
-
-4. **Démarrer le serveur**
-```bash
+cp .env.example .env      # puis adaptez la connexion MySQL si besoin
 npm start
 ```
 
-5. **Accéder à l'application**
-Ouvrez votre navigateur sur `http://localhost:3000`
+Ouvrez http://localhost:3000 — compte `admin` / `admin123` (modifiable avec `ADMIN_PASSWORD`).
+Au premier démarrage, la base et les tables sont créées automatiquement. Avec `SEED_DEMO=true`, des données
+d'exemple et deux comptes de démonstration sont ajoutés : `pharmacien` et `vendeur` (mot de passe `demo12345`).
 
-## 🔐 Identifiants par défaut
+> **XAMPP qui ne démarre pas MySQL ?** Si MySQL reste bloqué au démarrage, ajoutez `skip-name-resolve`
+> sous `[mysqld]` dans `C:\xampp\mysql\bin\my.ini`, puis relancez-le depuis le panneau XAMPP.
 
-- **Username**: admin
-- **Password**: admin123
+## Tests
 
-⚠️ **Important**: Changez ces identifiants en production!
+Les tests d'intégration vérifient la sécurité, les rôles, les ventes, le stock, les commandes et les statistiques
+sur une vraie base MySQL. Ils utilisent une base dédiée (son nom doit contenir « test ») qui est **vidée** à chaque lancement :
 
-## 📁 Structure du projet
-
-```
-pharmacie-emeraude/
-├── server.js                 # Serveur backend Express
-├── api.js                    # Fonctions API frontend
-├── package.json              # Dépendances du projet
-├── .env                      # Variables d'environnement
-├── vercel.json               # Configuration Vercel
-├── tableaudebordpharmacy.html # Dashboard principal
-├── gestiondestocks.html      # Gestion des stocks
-├── caissesetvente.html       # Gestion des ventes
-├── clients.html              # Gestion des clients
-├── gestionfournisseur.html  # Gestion des fournisseurs
-├── profile.html              # Profil utilisateur
-└── README.md                 # Documentation
-```
-
-## 🌐 API Endpoints
-
-### Authentification
-- `POST /api/login` - Connexion utilisateur
-- `POST /api/register` - Inscription utilisateur
-
-### Produits
-- `GET /api/products` - Liste tous les produits
-- `GET /api/products/:id` - Récupère un produit
-- `POST /api/products` - Crée un produit (authentifié)
-- `PUT /api/products/:id` - Met à jour un produit (authentifié)
-- `DELETE /api/products/:id` - Supprime un produit (authentifié)
-
-### Ventes
-- `GET /api/sales` - Liste toutes les ventes
-- `POST /api/sales` - Crée une vente (authentifié)
-
-### Fournisseurs
-- `GET /api/suppliers` - Liste tous les fournisseurs
-- `POST /api/suppliers` - Crée un fournisseur (authentifié)
-
-### Clients
-- `GET /api/clients` - Liste tous les clients
-- `POST /api/clients` - Crée un client (authentifié)
-
-### Statistiques
-- `GET /api/stats` - Statistiques du dashboard
-
-## 🚀 Déploiement
-
-### Vercel (Recommandé)
-
-1. **Installer Vercel CLI**
 ```bash
-npm install -g vercel
+DB_NAME=pharmacie_tests npm test
 ```
 
-2. **Se connecter à Vercel**
-```bash
-vercel login
+## Mise en ligne (gratuite) : Aiven + Render
+
+1. **Base de données — [Aiven](https://aiven.io)** : créez un service *MySQL* gratuit. Dans *Connection information*,
+   notez Host, Port, User, Password et téléchargez le *CA certificate*.
+2. **Serveur — [Render](https://render.com)** : *New → Blueprint*, choisissez ce dépôt GitHub. Le fichier
+   `render.yaml` configure tout ; renseignez `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `ADMIN_PASSWORD`
+   et collez le contenu du certificat dans `DB_SSL_CA`.
+3. Render fournit une adresse du type `https://pharmacie-emeraude.onrender.com`.
+
+> Sur l'offre gratuite de Render, le serveur se met en veille après 15 min sans visite : la première ouverture prend ~30 s.
+
+## Structure
+
+```
+server.js            Point d'entrée (Express)
+config.js            Configuration (variables d'environnement)
+db/mysql.js          Connexion, création des tables et migrations
+db/seed-demo.js      Données de démonstration (npm run seed)
+middleware/          Authentification, rôles, erreurs, limitation de débit
+routes/              API : auth, users, products, sales, clients, suppliers, orders, stats, settings
+utils/validate.js    Validation des données reçues
+public/              Interface web (une page HTML par module + assets/app.js partagé)
+tests/api.test.js    Tests d'intégration
+archive/             Ancienne version (maquettes v2), non utilisée
 ```
 
-3. **Déployer**
-```bash
-vercel
-```
+## API (résumé)
 
-4. **Configurer les variables d'environnement**
-Dans le dashboard Vercel, ajoutez:
-- `JWT_SECRET`: Votre secret key pour JWT
+Toutes les routes (sauf `POST /api/auth/login` et `GET /api/health`) attendent l'en-tête `Authorization: Bearer <token>`.
 
-### Netlify
+| Méthode | Route | Rôle |
+|---|---|---|
+| POST | `/api/auth/login` | — |
+| GET / PUT | `/api/auth/me` · PUT `/api/auth/password` | tous |
+| GET | `/api/products` (`?q=&categorie=&alerte=stock\|expiration`) · `/api/products/categories` | tous |
+| POST / PUT / DELETE · PATCH `/:id/stock` | `/api/products` | pharmacien |
+| GET · POST | `/api/sales` (`?du=&au=&statut=`) — POST `{ client_id, mode_paiement, montant_recu, lignes: [{ produit_id, quantite }] }` | tous |
+| POST | `/api/sales/:id/annuler` | pharmacien |
+| GET / POST / PUT | `/api/clients` · DELETE | tous · pharmacien |
+| CRUD | `/api/suppliers`, `/api/orders` (+ PUT `/:id/statut`) | pharmacien |
+| GET | `/api/stats`, `/api/stats/daily`, `/api/stats/top-products`, `/api/stats/payments` | tous |
+| GET · PUT | `/api/settings` | tous · admin |
+| CRUD | `/api/users` | admin |
 
-1. **Créer un fichier netlify.toml**
-```toml
-[build]
-  command = "npm install"
-  start = "node server.js"
+## Licence
 
-[[redirects]]
-  from = "/*"
-  to = "/server.js"
-  status = 200
-```
-
-2. **Déployer avec Netlify CLI**
-```bash
-npm install -g netlify-cli
-netlify login
-netlify deploy --prod
-```
-
-### Heroku
-
-1. **Créer un fichier Procfile**
-```
-web: node server.js
-```
-
-2. **Déployer**
-```bash
-heroku create
-git push heroku main
-heroku config:set JWT_SECRET=votre-secret
-```
-
-## 🧪 Tests
-
-### Lancer les tests
-```bash
-npm test
-```
-
-### Tests API
-```bash
-# Test de connexion
-curl -X POST http://localhost:3000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-```
-
-## 📝 Configuration
-
-### Variables d'environnement
-
-- `PORT`: Port du serveur (défaut: 3000)
-- `JWT_SECRET`: Secret key pour JWT (obligatoire en production)
-- `NODE_ENV`: Environnement (development/production)
-
-## 🔒 Sécurité
-
-- Les mots de passe sont hashés avec bcrypt
-- Utilisation de JWT pour l'authentification
-- Protection CORS configurée
-- Validation des entrées utilisateur
-
-## 🤝 Contribution
-
-1. Fork le projet
-2. Créez une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push vers la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrez une Pull Request
-
-## 📄 Licence
-
-Ce projet est sous licence MIT.
-
-## 👥 Auteurs
-
-- Votre Nom - Développeur principal
-
-## 🙏 Remerciements
-
-- Design inspiré par Material Design 3
-- Icônes Material Symbols
-- Framework TailwindCSS
-
-## 📞 Support
-
-Pour toute question ou problème, contactez:
-- Email: support@pharmacie-emeraude.com
-- Issues: [GitHub Issues](https://github.com/votre-repo/pharmacie-emeraude/issues)
-
----
-
-**Note**: Ce projet est prêt pour la soutenance avec toutes les fonctionnalités backend et frontend opérationnelles.
+MIT — Adams Diarra

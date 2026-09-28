@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PharmaGestion CI - Tableau de Bord</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+        extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-container": "#00331d",
+                    "surface-container-highest": "#e2e2e5",
+                    "tertiary-container": "#dd7900",
+                    "on-tertiary-container": "#462200",
+                    "surface-container-high": "#e8e8ea",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#cdc6b8",
+                    "on-error": "#ffffff",
+                    "primary-container": "#00a86b",
+                    "surface-container-low": "#f3f3f6",
+                    "tertiary": "#904d00",
+                    "inverse-surface": "#2f3133",
+                    "on-primary-fixed-variant": "#005232",
+                    "on-surface": "#1a1c1e",
+                    "secondary": "#635e53",
+                    "inverse-primary": "#59de9b",
+                    "on-tertiary-fixed-variant": "#6e3900",
+                    "background": "#f9f9fc",
+                    "tertiary-fixed-dim": "#ffb77d",
+                    "on-secondary-fixed": "#1e1b13",
+                    "on-secondary-container": "#696458",
+                    "secondary-container": "#e9e2d3",
+                    "surface-variant": "#e2e2e5",
+                    "surface-bright": "#f9f9fc",
+                    "primary-fixed-dim": "#59de9b",
+                    "outline": "#6d7a70",
+                    "error-container": "#ffdad6",
+                    "on-primary-fixed": "#002111",
+                    "secondary-fixed": "#e9e2d3",
+                    "primary-fixed": "#78fbb6",
+                    "tertiary-fixed": "#ffdcc3",
+                    "inverse-on-surface": "#f0f0f3",
+                    "on-tertiary-fixed": "#2f1500",
+                    "surface": "#f9f9fc",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#006d43",
+                    "on-background": "#1a1c1e",
+                    "outline-variant": "#bccabe",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#3d4a41",
+                    "primary": "#006d43",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#4b463c",
+                    "surface-container": "#eeeef0",
+                    "surface-dim": "#dadadc"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "currency-display": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "currency-display": ["22px", {"lineHeight": "28px", "letterSpacing": "0.02em", "fontWeight": "700"}]
+            }
+        },
+        },
+    }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-dot::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background-color: #006d43;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-0 md:left-64 z-50 flex justify-between items-center px-6 py-3 bg-surface/70 dark:bg-inverse-surface/70 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full pl-10 pr-4 py-2 focus:ring-2 focus:ring-primary text-body-sm font-body-sm" placeholder="Rechercher un médicament, une vente..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined text-primary">help_outline</span>
+</button>
+<div class="h-8 w-px bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-3 ml-2">
+<div class="text-right hidden sm:block">
+<p class="font-label-md text-label-md text-on-surface">Dr. Koffi Kouadio</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Pharmacien Titulaire</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-primary-container" data-alt="A professional headshot of a middle-aged Ivorian pharmacist wearing a clean white lab coat, standing in a bright, modern pharmacy environment. The lighting is soft and flattering, emphasizing a clean and trustworthy professional image. The background shows blurred medicine shelves in high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARYdMJUgJ1CN_NhSHuptt1p1UOZoBy3gae8ebKBIcG8xIj8mkIHU6G3Jf9k7ib1-Qdvc8DI8ZoUvwDWFlmtXMQ38miS5yO9idxncWohsbpMMw1Z3msTB4Z0oZoUseH9kyiI4LqwOJJRWG1_QF9b7s2fg7NcFqgtD1QCj4YqcitNWOF8gNAVCc-igiJLtYA4WZY5es7vUNEmLMe6Ql8hs7lRC4PmxsRBxebbH3MMOymKpl-7mvqkaGA6g"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation Bar (Desktop) -->
+<nav class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 border-r border-outline-variant bg-surface py-4 z-50">
+<div class="px-6 mb-8">
+<h1 class="font-headline-md text-headline-md font-black text-primary leading-tight">PharmaGestion CI</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Abidjan Plateau</p>
+</div>
+<div class="flex-1 space-y-1">
+<a class="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 mx-2 font-bold transition-transform active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Tableau de bord</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-md text-label-md">Inventaire</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="#">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="font-label-md text-label-md">Ventes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="#">
+<span class="material-symbols-outlined">shopping_cart</span>
+<span class="font-label-md text-label-md">Commandes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-3 mx-2" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-label-md text-label-md">Rapports</span>
+</a>
+</div>
+<div class="mt-auto px-4 py-4 space-y-4">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-xl shadow-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                Nouvelle Vente
+            </button>
+<div class="pt-4 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high transition-colors rounded-lg px-4 py-2" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Paramètres</span>
+</a>
+<a class="flex items-center gap-3 text-error hover:bg-error-container/10 transition-colors rounded-lg px-4 py-2" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Déconnexion</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pt-20 md:ml-64 min-h-screen px-4 md:px-8 pb-24 md:pb-8">
+<!-- Welcome Banner -->
+<section class="relative h-64 md:h-80 rounded-[2rem] overflow-hidden mb-8 group shadow-xl">
+<img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn0ctxnC5g1ih9gSyTDa8kf9ZDuJCm0WzzcfqPTty4sxOlcnEKGitiDArkzxym_ctxVy7NU6yOi7PnWFBSL4D5Up9K8BZXFL8Owb5ymBWKg04XA12a1W0aT4kpCNJSycD4War8MhHkG0KCCOnstspftFkf4VHnvHC1S0ELex3PTNjfG6oJkNuRYNFUm2EyeGIPFoTAkVDm0_E8cL8yzgQDloQNJbkHN3_PUyzzkiJQ-szpSzED37Ms4g"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-8 md:px-12">
+<span class="inline-block bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-sm text-label-sm mb-4 w-fit">
+                    Bonjour, Dr. Koffi
+                </span>
+<h2 class="font-headline-lg text-headline-lg text-white mb-2">Bienvenue sur votre espace<br/>PharmaGestion CI</h2>
+<p class="font-body-md text-body-md text-white/80 max-w-md">Gérez votre inventaire et suivez vos ventes en temps réel pour une pharmacie plus performante au cœur du Plateau.</p>
+</div>
+<div class="absolute bottom-6 right-8 hidden lg:flex gap-4">
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center min-w-[100px]">
+<span class="text-on-surface font-headline-sm text-headline-sm">28°C</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">Abidjan</span>
+</div>
+<div class="glass-card p-4 rounded-2xl flex flex-col items-center min-w-[100px]">
+<span class="text-on-surface font-headline-sm text-headline-sm">08:45</span>
+<span class="text-on-surface-variant font-label-sm text-label-sm">GMT+0</span>
+</div>
+</div>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<!-- Ventes du jour -->
+<div class="bg-surface-container-lowest p-6 rounded-[2rem] shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 rounded-2xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="text-primary font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">trending_up</span> +12%
+                    </span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md mb-1">Ventes du jour</p>
+<div class="flex items-baseline gap-2">
+<h3 class="font-currency-display text-currency-display text-on-surface">1.240.500</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">FCFA</span>
+</div>
+</div>
+<!-- Alertes Stock -->
+<div class="bg-surface-container-lowest p-6 rounded-[2rem] shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 rounded-2xl bg-tertiary/10 text-tertiary">
+<span class="material-symbols-outlined">warning</span>
+</div>
+<span class="text-tertiary font-label-sm text-label-sm">8 articles</span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md mb-1">Alertes stock</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">Péremption proche</h3>
+<div class="mt-2 w-full bg-surface-container-high h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full w-2/3"></div>
+</div>
+</div>
+<!-- Nouveaux Clients -->
+<div class="bg-surface-container-lowest p-6 rounded-[2rem] shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 rounded-2xl bg-secondary/10 text-secondary">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<span class="text-on-surface-variant font-label-sm text-label-sm">+4 aujourd'hui</span>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md mb-1">Nouveaux clients</p>
+<div class="flex items-baseline gap-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">42</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ce mois</span>
+</div>
+</div>
+<!-- Ordonnances -->
+<div class="bg-surface-container-lowest p-6 rounded-[2rem] shadow-sm border border-outline-variant/30 flex flex-col hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-4">
+<div class="p-3 rounded-2xl bg-primary/10 text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+</div>
+<p class="text-on-surface-variant font-label-md text-label-md mb-1">Ordonnances traitées</p>
+<h3 class="font-headline-md text-headline-md text-on-surface">156</h3>
+<div class="flex -space-x-2 mt-4 overflow-hidden">
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-200"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-300"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-slate-400"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white bg-primary text-on-primary flex items-center justify-center font-label-sm text-[10px]">+12</div>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Sales Chart Card -->
+<div class="lg:col-span-2 bg-surface-container-lowest p-8 rounded-[2rem] shadow-sm border border-outline-variant/30">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Performance Hebdomadaire</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Évolution des ventes sur les 7 derniers jours</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-high px-4 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant">Mois</button>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-full font-label-sm text-label-sm font-bold">Semaine</button>
+</div>
+</div>
+<div class="relative h-64 w-full flex items-end justify-between gap-2 md:gap-4 px-2">
+<!-- Simple Bar Chart Representation -->
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary transition-all duration-300 h-[60%]"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Lun</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary transition-all duration-300 h-[75%]"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mar</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary transition-all duration-300 h-[45%]"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Mer</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary transition-all duration-300 h-[90%]"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Jeu</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary transition-all duration-300 h-[65%]"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ven</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary rounded-t-xl h-[100%]"></div>
+<span class="font-label-md text-label-md text-primary font-bold">Sam</span>
+</div>
+<div class="flex-1 flex flex-col items-center gap-2 group">
+<div class="w-full bg-primary/20 rounded-t-xl group-hover:bg-primary transition-all duration-300 h-[30%]"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Dim</span>
+</div>
+</div>
+</div>
+<!-- Health News Section -->
+<div class="bg-surface-container-lowest p-8 rounded-[2rem] shadow-sm border border-outline-variant/30">
+<div class="flex items-center justify-between mb-6">
+<h4 class="font-headline-sm text-headline-sm text-on-surface">Actualités Santé CI</h4>
+<span class="material-symbols-outlined text-primary">rss_feed</span>
+</div>
+<div class="space-y-6">
+<article class="group cursor-pointer">
+<p class="font-label-sm text-label-sm text-tertiary mb-1">MINISTÈRE DE LA SANTÉ</p>
+<h5 class="font-body-md text-body-md font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2">Lancement de la campagne nationale de vaccination contre la grippe saisonnière.</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Il y a 2 heures</p>
+</article>
+<article class="group cursor-pointer">
+<p class="font-label-sm text-label-sm text-primary mb-1">PHARMACIE</p>
+<h5 class="font-body-md text-body-md font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2">Nouvelle réglementation sur l'étiquetage des médicaments importés.</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Hier, 16:45</p>
+</article>
+<article class="group cursor-pointer">
+<p class="font-label-sm text-label-sm text-on-secondary-container mb-1">LOCAL - PLATEAU</p>
+<h5 class="font-body-md text-body-md font-bold text-on-surface group-hover:text-primary transition-colors line-clamp-2">Travaux de voirie : Impact sur les livraisons matinales dans le quartier.</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">20 Octobre</p>
+</article>
+<button class="w-full py-3 border border-outline-variant rounded-xl font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors mt-2">
+                        Voir toutes les actualités
+                    </button>
+</div>
+</div>
+</div>
+<!-- Quick Actions Floating Bar (Mobile only visual) -->
+<div class="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 glass-card border border-white/20 px-6 py-4 rounded-full shadow-2xl flex items-center gap-8 z-50">
+<button class="flex flex-col items-center gap-1 text-primary relative active-dot">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-bold">Bord</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="text-[10px]">Stock</span>
+</button>
+<button class="bg-primary text-on-primary w-12 h-12 rounded-full flex items-center justify-center -mt-10 shadow-lg border-4 border-background">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">point_of_sale</span>
+<span class="text-[10px]">Ventes</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px]">Moi</span>
+</button>
+</div>
+</main>
+<script>
+        // Simple interactivity for demonstration
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('click', (e) => {
+                if (el.getAttribute('href') === '#') e.preventDefault();
+                console.log('Interaction detected on:', el.innerText || el.querySelector('span')?.innerText);
+            });
+        });
+
+        // Chart "animation" on load
+        window.addEventListener('load', () => {
+            const bars = document.querySelectorAll('.rounded-t-xl');
+            bars.forEach((bar, index) => {
+                const originalHeight = bar.style.height;
+                bar.style.height = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'height 1s cubic-bezier(0.16, 1, 0.3, 1)';
+                    bar.style.height = originalHeight;
+                }, index * 100);
+            });
+        });
+    </script>
+</body></html>

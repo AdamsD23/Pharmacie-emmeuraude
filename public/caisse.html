@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Caisse | Pharmacie Émeraude</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+<main id="app-main" class="min-h-screen">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Caisse</h1>
+                <p class="text-slate-500">Recherchez un produit, ajoutez-le au panier puis encaissez.</p>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-5 gap-6 items-start">
+            <!-- Produits -->
+            <section class="lg:col-span-3 space-y-4">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                    <input id="search" type="search" autofocus placeholder="Rechercher un produit (nom, catégorie)…  Entrée = ajouter le 1er résultat"
+                           class="w-full pl-10 pr-3 py-3 rounded-xl border border-slate-200 bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                </div>
+                <div id="products" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3"></div>
+            </section>
+
+            <!-- Panier -->
+            <aside class="lg:col-span-2 lg:sticky lg:top-6 bg-white rounded-2xl border border-slate-200 flex flex-col">
+                <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+                    <h2 class="font-semibold text-slate-900 flex items-center gap-2"><span class="material-symbols-outlined">shopping_basket</span>Panier</h2>
+                    <button type="button" id="clear" class="text-sm text-slate-500 hover:text-red-600">Vider</button>
+                </div>
+
+                <ul id="cart" class="divide-y divide-slate-100 max-h-[40vh] overflow-y-auto"></ul>
+
+                <div class="p-4 border-t border-slate-100 space-y-4">
+                    <div>
+                        <label for="client" class="block text-sm font-medium text-slate-700 mb-1">Client</label>
+                        <div class="flex gap-2">
+                            <select id="client" class="flex-1 min-w-0 px-3 py-2.5 rounded-lg border border-slate-200 bg-white"></select>
+                            <button type="button" id="new-client" class="px-3 rounded-lg border border-slate-200 hover:bg-slate-50" aria-label="Nouveau client" title="Nouveau client">
+                                <span class="material-symbols-outlined">person_add</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="block text-sm font-medium text-slate-700 mb-1">Paiement</p>
+                        <div id="payments" class="grid grid-cols-3 gap-2 text-sm"></div>
+                    </div>
+
+                    <div id="cash-box">
+                        <label for="received" class="block text-sm font-medium text-slate-700 mb-1">Montant reçu (FCFA)</label>
+                        <input id="received" type="number" min="0" step="5" inputmode="numeric" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                        <div id="quick-cash" class="flex flex-wrap gap-2 mt-2"></div>
+                        <p id="change" class="text-sm mt-2"></p>
+                    </div>
+
+                    <div class="flex items-baseline justify-between pt-2 border-t border-slate-100">
+                        <span class="text-slate-500">Total</span>
+                        <span id="total" class="text-3xl font-bold text-slate-900">0 FCFA</span>
+                    </div>
+
+                    <button type="button" id="checkout" disabled
+                            class="w-full py-3.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white text-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed">
+                        <span class="material-symbols-outlined">task_alt</span>Encaisser
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+    let products = [];
+    let clients = [];
+    let cart = [];            // [{ product, quantite }]
+    let payment = 'especes';
+    const PAYMENTS = [['especes', 'payments'], ['wave', 'waves'], ['orange_money', 'smartphone'], ['mtn_money', 'smartphone'], ['moov_money', 'smartphone'], ['carte', 'credit_card']];
+
+    const total = () => cart.reduce((s, l) => s + l.product.prix * l.quantite, 0);
+
+    function renderProducts() {
+        const q = document.getElementById('search').value.trim().toLowerCase();
+        const list = products.filter(p => !q || `${p.nom} ${p.categorie || ''}`.toLowerCase().includes(q)).slice(0, 60);
+        document.getElementById('products').innerHTML = list.length ? list.map(p => {
+            const inCart = cart.find(l => l.product.id === p.id)?.quantite || 0;
+            const available = p.stock - inCart;
+            const disabled = available <= 0 || p.expire;
+            return `<button type="button" data-add="${p.id}" ${disabled ? 'disabled' : ''}
+                class="text-left bg-white rounded-xl border ${inCart ? 'border-brand-500 ring-2 ring-brand-100' : 'border-slate-200'} p-3 hover:border-brand-500 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                <p class="font-medium text-slate-900 leading-snug">${App.esc(p.nom)}</p>
+                <p class="text-xs text-slate-500 mt-0.5">${App.esc(p.categorie || '')}</p>
+                <div class="flex items-center justify-between mt-3">
+                    <span class="font-bold text-brand-700">${App.fcfa(p.prix)}</span>
+                    ${p.expire ? App.badge('Expiré', 'red') : available <= 0 ? App.badge('Rupture', 'red') : App.badge(`${available} en stock`, p.stock_faible ? 'amber' : 'slate')}
+                </div>
+            </button>`;
+        }).join('') : '<p class="col-span-full text-center text-slate-500 py-10">Aucun produit trouvé.</p>';
+    }
+
+    function renderCart() {
+        const el = document.getElementById('cart');
+        el.innerHTML = cart.length ? cart.map((l, i) => `
+            <li class="p-4">
+                <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                        <p class="font-medium text-slate-900 leading-snug">${App.esc(l.product.nom)}</p>
+                        <p class="text-xs text-slate-500">${App.fcfa(l.product.prix)} l'unité</p>
+                    </div>
+                    <button type="button" data-remove="${i}" class="text-slate-400 hover:text-red-600 flex-shrink-0" aria-label="Retirer"><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div class="flex items-center justify-between gap-3 mt-2">
+                    <div class="flex items-center gap-1">
+                        <button type="button" data-qty="${i}" data-delta="-1" class="w-8 h-8 rounded-lg border border-slate-200 hover:bg-slate-100" aria-label="Diminuer">−</button>
+                        <input type="number" data-set="${i}" value="${l.quantite}" min="1" max="${l.product.stock}" class="w-14 text-center py-1 rounded-lg border border-slate-200" aria-label="Quantité">
+                        <button type="button" data-qty="${i}" data-delta="1" class="w-8 h-8 rounded-lg border border-slate-200 hover:bg-slate-100" aria-label="Augmenter">+</button>
+                    </div>
+                    <span class="font-semibold whitespace-nowrap">${App.fcfa(l.product.prix * l.quantite)}</span>
+                </div>
+            </li>`).join('')
+            : '<li class="p-8 text-center text-slate-500"><span class="material-symbols-outlined text-slate-300" style="font-size:40px">shopping_cart</span><p class="mt-2">Le panier est vide</p></li>';
+
+        const t = total();
+        document.getElementById('total').textContent = App.fcfa(t);
+        document.getElementById('checkout').disabled = cart.length === 0;
+
+        // Montants rapides : total exact et billets ronds au-dessus
+        const suggestions = [t, ...[1000, 2000, 5000, 10000, 20000].map(b => Math.ceil(t / b) * b)]
+            .filter((v, i, a) => v > 0 && a.indexOf(v) === i).slice(0, 4);
+        document.getElementById('quick-cash').innerHTML = suggestions.map(v =>
+            `<button type="button" data-cash="${v}" class="px-3 py-1 rounded-full border border-slate-200 text-sm hover:border-brand-500">${App.number(v)}</button>`).join('');
+        renderChange();
+        renderProducts();
+    }
+
+    function renderChange() {
+        const received = Number(document.getElementById('received').value);
+        const el = document.getElementById('change');
+        if (!received || !cart.length) { el.textContent = ''; return; }
+        const diff = received - total();
+        el.innerHTML = diff >= 0
+            ? `À rendre : <strong class="text-emerald-700">${App.fcfa(diff)}</strong>`
+            : `<span class="text-red-600">Il manque ${App.fcfa(-diff)}</span>`;
+    }
+
+    function renderPayments() {
+        document.getElementById('payments').innerHTML = PAYMENTS.map(([value, icon]) => `
+            <button type="button" data-payment="${value}" class="flex flex-col items-center gap-0.5 py-2 rounded-lg border ${payment === value ? 'border-brand-600 bg-brand-50 text-brand-800 font-semibold' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}">
+                <span class="material-symbols-outlined" style="font-size:20px">${icon}</span>${App.PAYMENT_LABELS[value]}
+            </button>`).join('');
+        document.getElementById('cash-box').classList.toggle('hidden', payment !== 'especes');
+    }
+
+    function renderClients(selectedId) {
+        const select = document.getElementById('client');
+        select.innerHTML = '<option value="">Client de passage</option>' +
+            clients.map(c => `<option value="${c.id}">${App.esc(`${c.nom} ${c.prenom || ''}`.trim())}${c.telephone ? ' — ' + App.esc(c.telephone) : ''}</option>`).join('');
+        if (selectedId) select.value = selectedId;
+    }
+
+    function addToCart(id) {
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+        const line = cart.find(l => l.product.id === id);
+        if ((line?.quantite || 0) >= product.stock) return App.toast(`Stock insuffisant pour « ${product.nom} »`, 'error');
+        if (line) line.quantite++; else cart.push({ product, quantite: 1 });
+        renderCart();
+    }
+
+    function resetSale() {
+        cart = [];
+        payment = 'especes';
+        document.getElementById('received').value = '';
+        document.getElementById('client').value = '';
+        document.getElementById('search').value = '';
+        renderPayments();
+        renderCart();
+        document.getElementById('search').focus();
+    }
+
+    async function checkout() {
+        const button = document.getElementById('checkout');
+        const received = Number(document.getElementById('received').value) || null;
+        if (payment === 'especes' && received !== null && received < total()) {
+            return App.toast('Le montant reçu est inférieur au total', 'error');
+        }
+        button.disabled = true;
+        try {
+            const sale = await App.api('/sales', {
+                method: 'POST',
+                body: {
+                    client_id: Number(document.getElementById('client').value) || null,
+                    mode_paiement: payment,
+                    montant_recu: payment === 'especes' ? received : null,
+                    lignes: cart.map(l => ({ produit_id: l.product.id, quantite: l.quantite }))
+                }
+            });
+            products = await App.api('/products');
+            resetSale();
+            const rendu = sale.montant_recu ? sale.montant_recu - sale.total : null;
+            const m = App.modal({
+                title: 'Vente enregistrée',
+                size: 'max-w-sm',
+                content: `
+                    <div class="text-center">
+                        <span class="material-symbols-outlined icon-fill text-emerald-600" style="font-size:56px">check_circle</span>
+                        <p class="text-3xl font-bold mt-2">${App.fcfa(sale.total)}</p>
+                        <p class="text-slate-500 mt-1">Vente n°${sale.id} · ${App.esc(App.PAYMENT_LABELS[sale.mode_paiement])}</p>
+                        ${rendu !== null ? `<p class="mt-3 text-lg">Monnaie à rendre : <strong class="text-emerald-700">${App.fcfa(rendu)}</strong></p>` : ''}
+                        <div class="grid grid-cols-2 gap-2 mt-6">
+                            <button type="button" data-print class="py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex items-center justify-center gap-2"><span class="material-symbols-outlined">print</span>Reçu</button>
+                            <button type="button" data-close class="py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">Nouvelle vente</button>
+                        </div>
+                    </div>`
+            });
+            m.el.querySelector('[data-print]').addEventListener('click', () => App.printReceipt(sale));
+        } catch (error) {
+            App.toast(error.message, 'error');
+            products = await App.api('/products').catch(() => products);
+            renderCart();
+        } finally {
+            button.disabled = cart.length === 0;
+        }
+    }
+
+    App.ready(async () => {
+        [products, clients] = await Promise.all([App.api('/products'), App.api('/clients')]);
+        renderClients();
+        renderPayments();
+
+        const preset = Number(new URLSearchParams(location.search).get('produit'));
+        if (preset) addToCart(preset);
+        renderCart();
+
+        const search = document.getElementById('search');
+        search.addEventListener('input', renderProducts);
+        search.addEventListener('keydown', e => {
+            if (e.key !== 'Enter') return;
+            e.preventDefault();
+            const first = document.querySelector('#products [data-add]:not([disabled])');
+            if (first) { addToCart(Number(first.dataset.add)); search.select(); }
+        });
+
+        document.getElementById('products').addEventListener('click', e => {
+            const b = e.target.closest('[data-add]');
+            if (b) addToCart(Number(b.dataset.add));
+        });
+
+        const cartEl = document.getElementById('cart');
+        cartEl.addEventListener('click', e => {
+            const qty = e.target.closest('[data-qty]');
+            const remove = e.target.closest('[data-remove]');
+            if (qty) {
+                const line = cart[qty.dataset.qty];
+                const next = line.quantite + Number(qty.dataset.delta);
+                if (next > line.product.stock) return App.toast('Stock insuffisant', 'error');
+                if (next <= 0) cart.splice(qty.dataset.qty, 1); else line.quantite = next;
+                renderCart();
+            }
+            if (remove) { cart.splice(remove.dataset.remove, 1); renderCart(); }
+        });
+        cartEl.addEventListener('change', e => {
+            const input = e.target.closest('[data-set]');
+            if (!input) return;
+            const line = cart[input.dataset.set];
+            const value = Math.floor(Number(input.value));
+            if (!value || value < 1) cart.splice(input.dataset.set, 1);
+            else line.quantite = Math.min(value, line.product.stock);
+            if (value > line?.product.stock) App.toast('Quantité limitée au stock disponible', 'info');
+            renderCart();
+        });
+
+        document.getElementById('payments').addEventListener('click', e => {
+            const b = e.target.closest('[data-payment]');
+            if (b) { payment = b.dataset.payment; renderPayments(); }
+        });
+        document.getElementById('received').addEventListener('input', renderChange);
+        document.getElementById('quick-cash').addEventListener('click', e => {
+            const b = e.target.closest('[data-cash]');
+            if (b) { document.getElementById('received').value = b.dataset.cash; renderChange(); }
+        });
+        document.getElementById('clear').addEventListener('click', () => { cart = []; renderCart(); });
+        document.getElementById('checkout').addEventListener('click', checkout);
+
+        document.getElementById('new-client').addEventListener('click', () => App.formModal({
+            title: 'Nouveau client',
+            fields: [
+                { name: 'nom', label: 'Nom', required: true, autofocus: true },
+                { name: 'prenom', label: 'Prénom' },
+                { name: 'telephone', label: 'Téléphone', type: 'tel', placeholder: '07 00 00 00 00' },
+                { name: 'email', label: 'Email', type: 'email' }
+            ],
+            onSubmit: async data => {
+                const client = await App.api('/clients', { method: 'POST', body: data });
+                clients = await App.api('/clients');
+                renderClients(client.id);
+                App.toast('Client ajouté');
+            }
+        }));
+    });
+</script>
+</body>
+</html>

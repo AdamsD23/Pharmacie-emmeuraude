@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Connexion | Pharmacie Émeraude</title>
+    <meta name="description" content="Pharmacie Émeraude — application de gestion de pharmacie : stock, caisse, clients, fournisseurs et statistiques.">
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800">
+<div class="min-h-screen grid lg:grid-cols-2">
+    <!-- Présentation -->
+    <section class="hidden lg:flex flex-col justify-between p-12 bg-gradient-to-br from-brand-700 via-brand-800 to-brand-900 text-white relative overflow-hidden">
+        <div class="absolute -right-24 -top-24 w-96 h-96 rounded-full bg-white/5"></div>
+        <div class="absolute -left-16 bottom-10 w-72 h-72 rounded-full bg-white/5"></div>
+        <div class="relative flex items-center gap-3">
+            <img src="assets/favicon.svg" alt="" class="w-11 h-11 rounded-xl ring-2 ring-white/20">
+            <span class="text-xl font-bold">Pharmacie Émeraude</span>
+        </div>
+        <div class="relative">
+            <h1 class="text-4xl font-bold leading-tight">La gestion de votre officine,<br>simple et fiable.</h1>
+            <ul class="mt-8 space-y-4 text-brand-50/90">
+                <li class="flex items-center gap-3"><span class="material-symbols-outlined">inventory_2</span>Stock en temps réel, alertes de rupture et de péremption</li>
+                <li class="flex items-center gap-3"><span class="material-symbols-outlined">point_of_sale</span>Caisse rapide, Mobile Money et reçus imprimables</li>
+                <li class="flex items-center gap-3"><span class="material-symbols-outlined">monitoring</span>Chiffre d'affaires et meilleures ventes en un coup d'œil</li>
+            </ul>
+        </div>
+        <p class="relative text-sm text-brand-100/70">Projet réalisé dans le cadre de Simplon Côte d'Ivoire</p>
+    </section>
+
+    <!-- Formulaire -->
+    <main class="flex items-center justify-center p-6">
+        <div class="w-full max-w-sm">
+            <div class="lg:hidden flex items-center gap-3 mb-10">
+                <img src="assets/favicon.svg" alt="" class="w-10 h-10">
+                <span class="text-xl font-bold text-slate-900">Pharmacie Émeraude</span>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-900">Connexion</h2>
+            <p class="text-slate-500 mt-1">Accédez à votre espace de gestion.</p>
+
+            <div id="message" class="hidden mt-6 text-sm rounded-lg px-3 py-2"></div>
+
+            <form id="login-form" class="mt-6 space-y-4">
+                <div>
+                    <label for="username" class="block text-sm font-medium text-slate-700 mb-1">Identifiant</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">person</span>
+                        <input id="username" name="username" required autocomplete="username" autocapitalize="none"
+                               class="w-full pl-11 pr-3 py-3 rounded-lg border border-slate-200 bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Mot de passe</label>
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">lock</span>
+                        <input id="password" name="password" type="password" required autocomplete="current-password"
+                               class="w-full pl-11 pr-11 py-3 rounded-lg border border-slate-200 bg-white focus:border-brand-600 focus:ring-2 focus:ring-brand-100 outline-none">
+                        <button type="button" id="toggle-password" class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-500" aria-label="Afficher le mot de passe">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="w-full py-3 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold flex items-center justify-center gap-2 disabled:opacity-60">
+                    <span>Se connecter</span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </form>
+
+            <div id="demo" class="hidden mt-8 rounded-xl border border-brand-100 bg-brand-50 p-4 text-sm">
+                <p class="font-semibold text-brand-800 flex items-center gap-2"><span class="material-symbols-outlined">science</span>Version de démonstration</p>
+                <p class="text-slate-600 mt-1">Testez l'application avec un de ces comptes :</p>
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <button type="button" data-demo="pharmacien" class="text-left rounded-lg bg-white border border-brand-100 px-3 py-2 hover:border-brand-500">
+                        <span class="block font-semibold text-slate-800">pharmacien</span><span class="text-xs text-slate-500">demo12345</span>
+                    </button>
+                    <button type="button" data-demo="vendeur" class="text-left rounded-lg bg-white border border-brand-100 px-3 py-2 hover:border-brand-500">
+                        <span class="block font-semibold text-slate-800">vendeur</span><span class="text-xs text-slate-500">demo12345</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script src="assets/app.js"></script>
+<script>
+    const form = document.getElementById('login-form');
+    const messageBox = document.getElementById('message');
+
+    function showMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = `mt-6 text-sm rounded-lg px-3 py-2 ${type === 'error' ? 'bg-red-50 text-red-700 border border-red-100' : 'bg-slate-100 text-slate-700'}`;
+    }
+
+    const params = new URLSearchParams(location.search);
+    if (params.get('message')) showMessage(params.get('message'), 'info');
+
+    // Déjà connecté : direction le tableau de bord
+    if (App.getToken()) {
+        App.api('/auth/me').then(() => { location.href = 'tableau-de-bord.html'; }).catch(() => {});
+    }
+
+    fetch('/api/health').then(r => r.json()).then(h => {
+        if (h.demo) document.getElementById('demo').classList.remove('hidden');
+    }).catch(() => {});
+
+    document.querySelectorAll('[data-demo]').forEach(button => button.addEventListener('click', () => {
+        form.username.value = button.dataset.demo;
+        form.password.value = 'demo12345';
+        form.requestSubmit();
+    }));
+
+    document.getElementById('toggle-password').addEventListener('click', e => {
+        const visible = form.password.type === 'text';
+        form.password.type = visible ? 'password' : 'text';
+        e.currentTarget.querySelector('span').textContent = visible ? 'visibility' : 'visibility_off';
+    });
+
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const button = form.querySelector('button[type="submit"]');
+        button.disabled = true;
+        try {
+            const result = await App.api('/auth/login', {
+                method: 'POST',
+                body: { username: form.username.value.trim(), password: form.password.value }
+            });
+            App.saveSession(result.token, result.user);
+            location.href = 'tableau-de-bord.html';
+        } catch (error) {
+            showMessage(error.message, 'error');
+            form.password.select();
+        } finally {
+            button.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

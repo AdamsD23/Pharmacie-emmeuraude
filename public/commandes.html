@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Commandes | Pharmacie Émeraude</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="bg-slate-50 text-slate-800" data-roles="pharmacien">
+<main id="app-main" class="min-h-screen">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Commandes fournisseurs</h1>
+                <p class="text-slate-500">Réapprovisionnez le stock. Une commande livrée ajoute automatiquement les quantités au stock.</p>
+            </div>
+            <button type="button" id="add" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">
+                <span class="material-symbols-outlined">add_shopping_cart</span>Nouvelle commande
+            </button>
+        </div>
+
+        <div class="flex flex-wrap gap-2" id="tabs" role="group" aria-label="Filtrer par statut"></div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="table-wrap">
+                <table class="w-full text-sm">
+                    <thead class="text-left text-slate-500 bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">N°</th>
+                            <th class="px-4 py-3 font-medium">Fournisseur</th>
+                            <th class="px-4 py-3 font-medium">Commandée le</th>
+                            <th class="px-4 py-3 font-medium">Livraison</th>
+                            <th class="px-4 py-3 font-medium text-center">Articles</th>
+                            <th class="px-4 py-3 font-medium text-right">Montant</th>
+                            <th class="px-4 py-3 font-medium">Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+    let orders = [];
+    let products = [];
+    let suppliers = [];
+    let statusFilter = '';
+
+    const STATUS = {
+        en_attente: ['En attente', 'amber'],
+        en_cours: ['En cours', 'blue'],
+        livree: ['Livrée', 'green'],
+        annulee: ['Annulée', 'slate']
+    };
+
+    function renderTabs() {
+        const tabs = [['', 'Toutes'], ...Object.entries(STATUS).map(([k, v]) => [k, v[0]])];
+        document.getElementById('tabs').innerHTML = tabs.map(([value, label]) => `
+            <button type="button" data-status="${value}" class="px-4 py-2 rounded-full text-sm font-medium border ${statusFilter === value ? 'bg-brand-700 border-brand-700 text-white' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}">${label}</button>`).join('');
+    }
+
+    function render() {
+        renderTabs();
+        document.getElementById('rows').innerHTML = orders.length ? orders.map(o => `
+            <tr class="hover:bg-slate-50 cursor-pointer" data-open="${o.id}">
+                <td class="px-4 py-3 font-medium">#${o.id}</td>
+                <td class="px-4 py-3">${App.esc(o.fournisseur_nom || '—')}</td>
+                <td class="px-4 py-3 whitespace-nowrap">${App.date(o.date_commande)}</td>
+                <td class="px-4 py-3 whitespace-nowrap">${o.date_livraison ? App.date(o.date_livraison) : '—'}</td>
+                <td class="px-4 py-3 text-center">${o.nb_articles}</td>
+                <td class="px-4 py-3 text-right font-semibold whitespace-nowrap">${App.fcfa(o.total)}</td>
+                <td class="px-4 py-3">${App.badge(...STATUS[o.statut])}</td>
+            </tr>`).join('') : App.emptyRow(7, 'Aucune commande.');
+    }
+
+    async function load() {
+        orders = await App.api(`/orders${statusFilter ? '?statut=' + statusFilter : ''}`);
+        render();
+    }
+
+    // ----- Création d'une commande -----
+    function openCreate() {
+        if (!suppliers.length) return App.toast('Ajoutez d\'abord un fournisseur', 'error');
+        let lines = [];
+        const form = document.createElement('form');
+        form.innerHTML = `
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1" for="o-supplier">Fournisseur <span class="text-red-500">*</span></label>
+                    <select id="o-supplier" name="fournisseur_id" required class="w-full px-3 py-2.5 rounded-lg border border-slate-200 bg-white">
+                        ${suppliers.map(s => `<option value="${s.id}">${App.esc(s.nom)}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1" for="o-date">Livraison prévue</label>
+                    <input id="o-date" name="date_livraison" type="date" min="${App.today()}" class="w-full px-3 py-2.5 rounded-lg border border-slate-200">
+                </div>
+            </div>
+
+            <div class="mt-5 flex items-center justify-between gap-2">
+                <h3 class="font-semibold">Produits</h3>
+                <button type="button" data-suggest class="text-sm text-brand-700 font-medium hover:underline flex items-center gap-1"><span class="material-symbols-outlined" style="font-size:18px">auto_fix_high</span>Ajouter les produits en stock faible</button>
+            </div>
+            <div class="flex gap-2 mt-2">
+                <select data-product class="flex-1 min-w-0 px-3 py-2.5 rounded-lg border border-slate-200 bg-white" aria-label="Produit à ajouter">
+                    <option value="">— Choisir un produit —</option>
+                    ${products.map(p => `<option value="${p.id}">${App.esc(p.nom)} (stock : ${p.stock})</option>`).join('')}
+                </select>
+                <button type="button" data-add-line class="px-4 rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">Ajouter</button>
+            </div>
+            <div class="mt-3 border border-slate-100 rounded-xl overflow-hidden">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-50 text-slate-500"><tr><th class="text-left px-3 py-2">Produit</th><th class="px-3 py-2 w-24">Qté</th><th class="px-3 py-2 w-32">Prix d'achat</th><th class="w-10"></th></tr></thead>
+                    <tbody data-lines class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-slate-700 mb-1" for="o-notes">Notes</label>
+                <textarea id="o-notes" name="notes" rows="2" class="w-full px-3 py-2.5 rounded-lg border border-slate-200 resize-none"></textarea>
+            </div>
+            <p data-error class="hidden mt-4 text-sm text-red-700 bg-red-50 border border-red-100 rounded-lg px-3 py-2"></p>
+            <div class="flex items-center justify-between gap-2 mt-6">
+                <p class="text-lg">Total : <strong data-total>0 FCFA</strong></p>
+                <div class="flex gap-2">
+                    <button type="button" data-close class="px-4 py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 font-medium">Annuler</button>
+                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold disabled:opacity-60">Créer la commande</button>
+                </div>
+            </div>`;
+
+        const m = App.modal({ title: 'Nouvelle commande', content: form, size: 'max-w-3xl' });
+
+        function renderLines() {
+            form.querySelector('[data-lines]').innerHTML = lines.length ? lines.map((l, i) => `
+                <tr>
+                    <td class="px-3 py-2">${App.esc(l.nom)}</td>
+                    <td class="px-3 py-2"><input type="number" min="1" step="1" value="${l.quantite}" data-field="quantite" data-i="${i}" class="w-full px-2 py-1 rounded border border-slate-200" aria-label="Quantité"></td>
+                    <td class="px-3 py-2"><input type="number" min="0" step="5" value="${l.prix_unitaire}" data-field="prix_unitaire" data-i="${i}" class="w-full px-2 py-1 rounded border border-slate-200" aria-label="Prix d'achat"></td>
+                    <td class="px-2"><button type="button" data-remove="${i}" class="text-slate-400 hover:text-red-600" aria-label="Retirer"><span class="material-symbols-outlined">close</span></button></td>
+                </tr>`).join('') : '<tr><td colspan="4" class="px-3 py-6 text-center text-slate-500">Aucun produit ajouté.</td></tr>';
+            form.querySelector('[data-total]').textContent = App.fcfa(lines.reduce((s, l) => s + l.quantite * l.prix_unitaire, 0));
+        }
+
+        function addLine(product, quantite) {
+            if (lines.some(l => l.produit_id === product.id)) return;
+            // Prix d'achat proposé : environ 70 % du prix de vente (modifiable)
+            lines.push({ produit_id: product.id, nom: product.nom, quantite, prix_unitaire: Math.round(product.prix * 0.7 / 5) * 5 });
+        }
+
+        form.addEventListener('click', e => {
+            if (e.target.closest('[data-add-line]')) {
+                const id = Number(form.querySelector('[data-product]').value);
+                const p = products.find(x => x.id === id);
+                if (p) { addLine(p, Math.max(p.stock_min * 2 - p.stock, 1)); renderLines(); }
+            }
+            if (e.target.closest('[data-suggest]')) {
+                const supplierId = Number(form.fournisseur_id.value);
+                const low = products.filter(p => p.stock_faible && (!p.fournisseur_id || p.fournisseur_id === supplierId));
+                if (!low.length) App.toast('Aucun produit en stock faible pour ce fournisseur', 'info');
+                low.forEach(p => addLine(p, Math.max(p.stock_min * 2 - p.stock, 1)));
+                renderLines();
+            }
+            const remove = e.target.closest('[data-remove]');
+            if (remove) { lines.splice(Number(remove.dataset.remove), 1); renderLines(); }
+        });
+        form.addEventListener('input', e => {
+            const input = e.target.closest('[data-field]');
+            if (!input) return;
+            lines[input.dataset.i][input.dataset.field] = Number(input.value) || 0;
+            form.querySelector('[data-total]').textContent = App.fcfa(lines.reduce((s, l) => s + l.quantite * l.prix_unitaire, 0));
+        });
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const errorBox = form.querySelector('[data-error]');
+            const button = form.querySelector('button[type="submit"]');
+            button.disabled = true;
+            errorBox.classList.add('hidden');
+            try {
+                await App.api('/orders', {
+                    method: 'POST',
+                    body: {
+                        fournisseur_id: Number(form.fournisseur_id.value),
+                        date_livraison: form.date_livraison.value || null,
+                        notes: form.notes.value.trim() || null,
+                        lignes: lines.map(({ produit_id, quantite, prix_unitaire }) => ({ produit_id, quantite, prix_unitaire }))
+                    }
+                });
+                App.toast('Commande créée');
+                m.close();
+                load();
+            } catch (error) {
+                errorBox.textContent = error.message;
+                errorBox.classList.remove('hidden');
+            } finally {
+                button.disabled = false;
+            }
+        });
+        renderLines();
+    }
+
+    // ----- Détail et suivi d'une commande -----
+    async function openDetail(id) {
+        const o = await App.api(`/orders/${id}`);
+        const actions = {
+            en_attente: [['en_cours', 'Marquer en cours', 'border border-slate-200 hover:bg-slate-50'], ['livree', 'Réceptionner', 'bg-brand-700 hover:bg-brand-800 text-white'], ['annulee', 'Annuler', 'text-red-600 hover:bg-red-50']],
+            en_cours: [['livree', 'Réceptionner', 'bg-brand-700 hover:bg-brand-800 text-white'], ['annulee', 'Annuler', 'text-red-600 hover:bg-red-50']],
+            annulee: [['en_attente', 'Réactiver', 'border border-slate-200 hover:bg-slate-50']],
+            livree: []
+        }[o.statut];
+
+        const m = App.modal({
+            title: `Commande n°${o.id}`,
+            size: 'max-w-2xl',
+            content: `
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm mb-4">
+                    <div><p class="text-slate-500">Fournisseur</p><p class="font-medium">${App.esc(o.fournisseur_nom)}</p></div>
+                    <div><p class="text-slate-500">Commandée le</p><p class="font-medium">${App.date(o.date_commande)}</p></div>
+                    <div><p class="text-slate-500">Livraison</p><p class="font-medium">${o.date_livraison ? App.date(o.date_livraison) : '—'}</p></div>
+                    <div><p class="text-slate-500">Statut</p><p>${App.badge(...STATUS[o.statut])}</p></div>
+                </div>
+                ${o.notes ? `<p class="text-sm bg-slate-50 rounded-lg p-3 mb-4">${App.esc(o.notes)}</p>` : ''}
+                <table class="w-full text-sm border-y border-slate-100">
+                    <thead class="text-slate-500"><tr><th class="text-left py-2">Produit</th><th class="text-center">Qté</th><th class="text-right">Prix d'achat</th><th class="text-right">Total</th></tr></thead>
+                    <tbody class="divide-y divide-slate-100">${o.lignes.map(l => `<tr><td class="py-2">${App.esc(l.produit_nom || 'Produit supprimé')}</td><td class="text-center">${l.quantite}</td><td class="text-right whitespace-nowrap">${App.fcfa(l.prix_unitaire)}</td><td class="text-right font-medium whitespace-nowrap">${App.fcfa(l.sous_total)}</td></tr>`).join('')}</tbody>
+                </table>
+                <p class="text-right text-xl font-bold mt-3">${App.fcfa(o.total)}</p>
+                ${o.statut === 'livree' ? '<p class="text-sm text-emerald-700 mt-2 flex items-center gap-1"><span class="material-symbols-outlined">inventory</span>Les quantités ont été ajoutées au stock.</p>' : ''}
+                <div class="flex flex-wrap justify-end gap-2 mt-6">
+                    ${o.statut !== 'livree' ? '<button type="button" data-delete class="px-4 py-2.5 rounded-lg text-slate-500 hover:bg-slate-100 font-medium mr-auto">Supprimer</button>' : ''}
+                    ${actions.map(([statut, label, cls]) => `<button type="button" data-status="${statut}" class="px-4 py-2.5 rounded-lg font-semibold ${cls}">${label}</button>`).join('')}
+                </div>`
+        });
+
+        m.el.addEventListener('click', async e => {
+            const status = e.target.closest('[data-status]');
+            const del = e.target.closest('[data-delete]');
+            try {
+                if (status) {
+                    if (status.dataset.status === 'livree' && !await App.confirm('Confirmer la réception ? Les quantités seront ajoutées au stock.', { confirmLabel: 'Réceptionner' })) return;
+                    await App.api(`/orders/${o.id}/statut`, { method: 'PUT', body: { statut: status.dataset.status } });
+                    App.toast(status.dataset.status === 'livree' ? 'Commande réceptionnée, stock mis à jour' : 'Statut mis à jour');
+                    m.close();
+                    products = await App.api('/products');
+                    load();
+                }
+                if (del && await App.confirm('Supprimer cette commande ?', { danger: true, confirmLabel: 'Supprimer' })) {
+                    await App.api(`/orders/${o.id}`, { method: 'DELETE' });
+                    App.toast('Commande supprimée');
+                    m.close();
+                    load();
+                }
+            } catch (error) {
+                App.toast(error.message, 'error');
+            }
+        });
+    }
+
+    App.ready(async () => {
+        [products, suppliers] = await Promise.all([App.api('/products'), App.api('/suppliers')]);
+        document.getElementById('add').addEventListener('click', openCreate);
+        document.getElementById('tabs').addEventListener('click', e => {
+            const b = e.target.closest('[data-status]');
+            if (b) { statusFilter = b.dataset.status; load(); }
+        });
+        document.getElementById('rows').addEventListener('click', e => {
+            const row = e.target.closest('[data-open]');
+            if (row) openDetail(row.dataset.open).catch(err => App.toast(err.message, 'error'));
+        });
+        document.getElementById('rows').innerHTML = App.skeletonRows(7);
+        await load();
+    });
+</script>
+</body>
+</html>

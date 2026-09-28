@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ventes | Pharmacie Émeraude</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/tailwind-config.js"></script>
+    <link rel="stylesheet" href="assets/app.css">
+</head>
+<body class="bg-slate-50 text-slate-800">
+<main id="app-main" class="min-h-screen">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Historique des ventes</h1>
+                <p class="text-slate-500">Consultez, réimprimez ou annulez une vente.</p>
+            </div>
+            <div class="flex gap-2">
+                <button type="button" id="export" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 font-medium">
+                    <span class="material-symbols-outlined">download</span><span class="hidden sm:inline">Exporter</span>
+                </button>
+                <a href="caisse.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">
+                    <span class="material-symbols-outlined">add</span>Nouvelle vente
+                </a>
+            </div>
+        </div>
+
+        <!-- Filtres -->
+        <form id="filters" class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-wrap items-end gap-3">
+            <div>
+                <label for="du" class="block text-xs font-medium text-slate-500 mb-1">Du</label>
+                <input id="du" name="du" type="date" class="px-3 py-2 rounded-lg border border-slate-200">
+            </div>
+            <div>
+                <label for="au" class="block text-xs font-medium text-slate-500 mb-1">Au</label>
+                <input id="au" name="au" type="date" class="px-3 py-2 rounded-lg border border-slate-200">
+            </div>
+            <div>
+                <label for="statut" class="block text-xs font-medium text-slate-500 mb-1">Statut</label>
+                <select id="statut" name="statut" class="px-3 py-2 rounded-lg border border-slate-200 bg-white">
+                    <option value="">Toutes</option>
+                    <option value="terminee">Terminées</option>
+                    <option value="annulee">Annulées</option>
+                </select>
+            </div>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <button type="button" data-range="0" class="px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50">Aujourd'hui</button>
+                <button type="button" data-range="6" class="px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50">7 jours</button>
+                <button type="button" data-range="29" class="px-3 py-2 rounded-lg border border-slate-200 hover:bg-slate-50">30 jours</button>
+            </div>
+        </form>
+
+        <!-- Résumé -->
+        <section id="summary" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></section>
+
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="table-wrap">
+                <table class="w-full text-sm">
+                    <thead class="text-left text-slate-500 bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">N°</th>
+                            <th class="px-4 py-3 font-medium">Date</th>
+                            <th class="px-4 py-3 font-medium">Client</th>
+                            <th class="px-4 py-3 font-medium">Vendeur</th>
+                            <th class="px-4 py-3 font-medium">Paiement</th>
+                            <th class="px-4 py-3 font-medium text-center">Articles</th>
+                            <th class="px-4 py-3 font-medium text-right">Total</th>
+                            <th class="px-4 py-3 font-medium"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows" class="divide-y divide-slate-100"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="assets/app.js"></script>
+<script>
+    let sales = [];
+    const form = document.getElementById('filters');
+
+    function card(label, value, sub = '') {
+        return `<div class="bg-white rounded-2xl border border-slate-200 p-4">
+            <p class="text-sm text-slate-500">${label}</p>
+            <p class="text-xl font-bold text-slate-900 mt-1">${value}</p>
+            ${sub ? `<p class="text-xs text-slate-500 mt-1">${sub}</p>` : ''}
+        </div>`;
+    }
+
+    function render() {
+        const done = sales.filter(s => s.statut === 'terminee');
+        const revenue = done.reduce((s, v) => s + v.total, 0);
+        const byPayment = {};
+        done.forEach(s => { byPayment[s.mode_paiement] = (byPayment[s.mode_paiement] || 0) + s.total; });
+        const topPayment = Object.entries(byPayment).sort((a, b) => b[1] - a[1])[0];
+
+        document.getElementById('summary').innerHTML = [
+            card('Chiffre d\'affaires', App.fcfa(revenue), `${done.length} vente(s)`),
+            card('Panier moyen', App.fcfa(done.length ? revenue / done.length : 0)),
+            card('Paiement principal', topPayment ? App.esc(App.PAYMENT_LABELS[topPayment[0]]) : '—', topPayment ? App.fcfa(topPayment[1]) : ''),
+            card('Annulées', String(sales.length - done.length))
+        ].join('');
+
+        document.getElementById('rows').innerHTML = sales.length ? sales.map(s => `
+            <tr class="hover:bg-slate-50 cursor-pointer ${s.statut === 'annulee' ? 'text-slate-400' : ''}" data-open="${s.id}">
+                <td class="px-4 py-3 font-medium">#${s.id}</td>
+                <td class="px-4 py-3 whitespace-nowrap">${App.datetime(s.date)}</td>
+                <td class="px-4 py-3">${App.esc(s.client_nom || 'Client de passage')}</td>
+                <td class="px-4 py-3">${App.esc(s.vendeur_nom || '—')}</td>
+                <td class="px-4 py-3">${App.esc(App.PAYMENT_LABELS[s.mode_paiement] || s.mode_paiement)}</td>
+                <td class="px-4 py-3 text-center">${s.nb_articles}</td>
+                <td class="px-4 py-3 text-right font-semibold whitespace-nowrap ${s.statut === 'annulee' ? 'line-through' : 'text-slate-900'}">${App.fcfa(s.total)}</td>
+                <td class="px-4 py-3 text-right">${s.statut === 'annulee' ? App.badge('Annulée', 'red') : '<span class="material-symbols-outlined text-slate-400">chevron_right</span>'}</td>
+            </tr>`).join('') : App.emptyRow(8, 'Aucune vente sur cette période.');
+    }
+
+    async function load() {
+        document.getElementById('rows').innerHTML = App.skeletonRows(8);
+        const params = new URLSearchParams({ limit: 1000 });
+        ['du', 'au', 'statut'].forEach(k => form[k].value && params.set(k, form[k].value));
+        sales = await App.api(`/sales?${params}`);
+        render();
+    }
+
+    async function openSale(id) {
+        const sale = await App.api(`/sales/${id}`);
+        const canCancel = App.can('pharmacien') && sale.statut === 'terminee';
+        const m = App.modal({
+            title: `Vente n°${sale.id}`,
+            size: 'max-w-xl',
+            content: `
+                <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                    <div><p class="text-slate-500">Date</p><p class="font-medium">${App.datetime(sale.date)}</p></div>
+                    <div><p class="text-slate-500">Statut</p><p>${sale.statut === 'annulee' ? App.badge('Annulée le ' + App.date(sale.annulee_le), 'red') : App.badge('Terminée', 'green')}</p></div>
+                    <div><p class="text-slate-500">Client</p><p class="font-medium">${App.esc(sale.client_nom || 'Client de passage')}${sale.client_telephone ? `<br><span class="text-slate-500">${App.esc(sale.client_telephone)}</span>` : ''}</p></div>
+                    <div><p class="text-slate-500">Vendeur</p><p class="font-medium">${App.esc(sale.vendeur_nom || '—')}</p></div>
+                </div>
+                <table class="w-full text-sm border-y border-slate-100">
+                    <thead class="text-slate-500"><tr><th class="text-left py-2">Produit</th><th class="text-center py-2">Qté</th><th class="text-right py-2">P.U.</th><th class="text-right py-2">Total</th></tr></thead>
+                    <tbody class="divide-y divide-slate-100">
+                        ${sale.lignes.map(l => `<tr><td class="py-2">${App.esc(l.produit_nom)}</td><td class="text-center">${l.quantite}</td><td class="text-right whitespace-nowrap">${App.fcfa(l.prix_unitaire)}</td><td class="text-right font-medium whitespace-nowrap">${App.fcfa(l.sous_total)}</td></tr>`).join('')}
+                    </tbody>
+                </table>
+                <div class="flex justify-between items-baseline mt-3">
+                    <span class="text-slate-500">${App.esc(App.PAYMENT_LABELS[sale.mode_paiement])}${sale.montant_recu ? ` · reçu ${App.fcfa(sale.montant_recu)}` : ''}</span>
+                    <span class="text-2xl font-bold">${App.fcfa(sale.total)}</span>
+                </div>
+                <div class="flex flex-wrap justify-end gap-2 mt-6">
+                    ${canCancel ? '<button type="button" data-cancel class="px-4 py-2.5 rounded-lg text-red-600 hover:bg-red-50 font-medium mr-auto">Annuler la vente</button>' : ''}
+                    <button type="button" data-print class="px-4 py-2.5 rounded-lg border border-slate-200 hover:bg-slate-50 font-medium flex items-center gap-2"><span class="material-symbols-outlined">print</span>Imprimer le reçu</button>
+                    <button type="button" data-close class="px-4 py-2.5 rounded-lg bg-brand-700 hover:bg-brand-800 text-white font-semibold">Fermer</button>
+                </div>`
+        });
+        m.el.querySelector('[data-print]').addEventListener('click', () => App.printReceipt(sale));
+        m.el.querySelector('[data-cancel]')?.addEventListener('click', async () => {
+            if (!await App.confirm('Annuler cette vente ? Les produits seront remis en stock.', { danger: true, confirmLabel: 'Annuler la vente' })) return;
+            try {
+                await App.api(`/sales/${sale.id}/annuler`, { method: 'POST' });
+                App.toast('Vente annulée, stock restauré');
+                m.close();
+                load();
+            } catch (error) {
+                App.toast(error.message, 'error');
+            }
+        });
+    }
+
+    function setRange(days) {
+        form.du.value = App.today(-days);
+        form.au.value = App.today();
+        load();
+    }
+
+    App.ready(async () => {
+        form.du.value = App.today(-6);
+        form.au.value = App.today();
+        form.addEventListener('change', load);
+        document.querySelectorAll('[data-range]').forEach(b => b.addEventListener('click', () => setRange(Number(b.dataset.range))));
+        document.getElementById('rows').addEventListener('click', e => {
+            const row = e.target.closest('[data-open]');
+            if (row) openSale(row.dataset.open).catch(err => App.toast(err.message, 'error'));
+        });
+        document.getElementById('export').addEventListener('click', () => App.csv(`ventes-${form.du.value}-au-${form.au.value}.csv`, sales, [
+            { label: 'N°', value: 'id' },
+            { label: 'Date', value: s => App.datetime(s.date) },
+            { label: 'Client', value: s => s.client_nom || 'Client de passage' },
+            { label: 'Vendeur', value: 'vendeur_nom' },
+            { label: 'Paiement', value: s => App.PAYMENT_LABELS[s.mode_paiement] || s.mode_paiement },
+            { label: 'Articles', value: 'nb_articles' },
+            { label: 'Total (FCFA)', value: 'total' },
+            { label: 'Statut', value: s => s.statut === 'annulee' ? 'Annulée' : 'Terminée' }
+        ]));
+
+        await load();
+        const id = new URLSearchParams(location.search).get('id');
+        if (id) openSale(id).catch(err => App.toast(err.message, 'error'));
+    });
+</script>
+</body>
+</html>

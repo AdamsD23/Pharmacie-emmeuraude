@@ -1,0 +1,81 @@
+﻿<!-- Configuration Tailwind StandardisÃ©e -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                "colors": {
+                    "error-container": "#ffdad6",
+                    "on-error": "#ffffff",
+                    "primary-fixed-dim": "#59de9b",
+                    "surface-variant": "#e2e2e5",
+                    "secondary-fixed-dim": "#cdc6b8",
+                    "tertiary": "#904d00",
+                    "on-tertiary-fixed-variant": "#6e3900",
+                    "primary": "#006d43",
+                    "surface": "#f9f9fc",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#2f3133",
+                    "outline": "#6d7a70",
+                    "outline-variant": "#bccabe",
+                    "tertiary-fixed-dim": "#ffb77d",
+                    "tertiary-container": "#dd7900",
+                    "on-secondary-fixed-variant": "#4b463c",
+                    "on-tertiary-fixed": "#2f1500",
+                    "on-secondary-container": "#696458",
+                    "inverse-primary": "#59de9b",
+                    "error": "#ba1a1a",
+                    "on-background": "#1a1c1e",
+                    "surface-container-highest": "#e2e2e5",
+                    "on-primary-fixed": "#002111",
+                    "primary-container": "#00a86b",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#3d4a41",
+                    "on-primary-fixed-variant": "#005232",
+                    "on-primary": "#ffffff",
+                    "surface-container": "#eeeef0",
+                    "on-surface": "#1a1c1e",
+                    "surface-container-high": "#e8e8ea",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary-fixed": "#ffdcc3",
+                    "secondary-fixed": "#e9e2d3",
+                    "on-secondary-fixed": "#1e1b13",
+                    "background": "#f9f9fc",
+                    "on-primary-container": "#00331d",
+                    "surface-container-low": "#f3f3f6",
+                    "inverse-on-surface": "#f0f0f3",
+                    "primary-fixed": "#78fbb6"
+                },
+                "fontFamily": {
+                    "sans": ["Inter", "sans-serif"]
+                }
+            }
+        }
+    }
+</script>
+<style>
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .icon-img {
+        width: 24px;
+        height: 24px;
+    }
+    .pharmacy-cross {
+        background: linear-gradient(135deg, #00a86b 0%, #006d43 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .pharmacy-cross::before {
+        content: "+";
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+

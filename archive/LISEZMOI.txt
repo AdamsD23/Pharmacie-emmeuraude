@@ -1,0 +1,3 @@
+﻿Ancienne version (v2) de Pharmacie Émeraude, conservée pour référence.
+Ces fichiers ne sont plus utilisés par l'application : la nouvelle interface est dans public/
+et le serveur n'utilise que db/mysql.js et les routes du dossier routes/.

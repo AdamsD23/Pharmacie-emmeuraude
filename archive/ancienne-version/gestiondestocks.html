@@ -1,0 +1,433 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inventaire - PharmaGestion CI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed": "#2f1500",
+                    "on-primary-fixed": "#002111",
+                    "tertiary-fixed": "#ffdcc3",
+                    "inverse-primary": "#59de9b",
+                    "on-tertiary-container": "#462200",
+                    "on-primary": "#ffffff",
+                    "background": "#f9f9fc",
+                    "on-primary-container": "#00331d",
+                    "secondary-fixed": "#e9e2d3",
+                    "on-error-container": "#93000a",
+                    "on-primary-fixed-variant": "#005232",
+                    "secondary-container": "#e9e2d3",
+                    "primary-fixed-dim": "#59de9b",
+                    "surface-container": "#eeeef0",
+                    "surface": "#f9f9fc",
+                    "error": "#ba1a1a",
+                    "on-secondary-container": "#696458",
+                    "tertiary-container": "#dd7900",
+                    "surface-container-high": "#e8e8ea",
+                    "primary-container": "#00a86b",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#006d43",
+                    "secondary": "#635e53",
+                    "error-container": "#ffdad6",
+                    "surface-container-lowest": "#ffffff",
+                    "outline-variant": "#bccabe",
+                    "inverse-surface": "#2f3133",
+                    "secondary-fixed-dim": "#cdc6b8",
+                    "surface-container-low": "#f3f3f6",
+                    "surface-bright": "#f9f9fc",
+                    "tertiary": "#904d00",
+                    "primary": "#006d43",
+                    "on-secondary-fixed-variant": "#4b463c",
+                    "outline": "#6d7a70",
+                    "inverse-on-surface": "#f0f0f3",
+                    "surface-dim": "#dadadc",
+                    "on-surface": "#1a1c1e",
+                    "on-secondary-fixed": "#1e1b13",
+                    "surface-container-highest": "#e2e2e5",
+                    "on-background": "#1a1c1e",
+                    "tertiary-fixed-dim": "#ffb77d",
+                    "on-surface-variant": "#3d4a41",
+                    "primary-fixed": "#78fbb6",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#6e3900",
+                    "surface-variant": "#e2e2e5"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "stack-gap": "16px",
+                    "grid-gutter": "12px",
+                    "container-padding": "20px",
+                    "grid-margin": "20px",
+                    "element-gap": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "currency-display": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "currency-display": ["22px", {"lineHeight": "28px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .scrolling-hide::-webkit-scrollbar { display: none; }
+        .scrolling-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .brand-title {
+            color: #006d43;
+        }
+        .progress-bar-70 { width: 70%; }
+        .progress-bar-15 { width: 15%; }
+        .progress-bar-45 { width: 45%; }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface">
+<aside class="hidden md:flex h-screen w-64 fixed left-0 top-0 flex-col py-4 bg-surface border-r border-outline-variant shadow-sm z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<img src="https://lh3.googleusercontent.com/aida/AP1WRLseQQ237-FB-esHBqMnNQA7ThFphUT4i7bBTiWhEF3pyb19sNnqRUjFE5b1pm5NrxFCyw1zksjAIU_z3lX01uGaKdyH_-S07B1AUB8WRM9wDSdlUyyOKbTu4M4Hq_TuNUPaJvo_D2NM_Jyx1LEeFTr8PqpxcRldy92ey6gT8a8ivNrtaapRXXPd6et-3Faa4S25HsheoRKxtmCB9HeeQLQACdGKUgPPj-fIrWDniRrpc_rAOGwQJE2Vz1I3" alt="PharmaGestion CI Logo" class="h-10 w-10 rounded-lg">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold brand-title">PharmaGestion CI</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Abidjan Plateau</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="tableaudebordpharmacy.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+<span class="font-label-md text-label-md">Tableau de bord</span>
+</a>
+<a class="flex items-center gap-3 bg-primary-container text-on-primary-container rounded-lg px-4 py-3 mx-2 font-bold transition-transform active:scale-95" href="#">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-9 16H5v-2h6v2zm0-4H5v-2h6v2zm0-4H5V8h6v2zm8 8h-6v-2h6v2zm0-4h-6v-2h6v2zm0-4h-6V8h6v2z"/></svg>
+<span class="font-label-md text-label-md">Inventaire</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="nouvellevente.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2h-4c-1.1 0-2-.9-2-2zm-2-8h2c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2zm2-8h2c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2z"/></svg>
+<span class="font-label-md text-label-md">Ventes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="commande.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2H5c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-4c0-1.1-.9-2-2-2h-4c-1.1 0-2-.9-2-2zm-2-8h2c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2H9c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2zm2-8h2c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-4c-1.1 0-2 .9-2 2v4c0 1.1.9 2 2 2z"/></svg>
+<span class="font-label-md text-label-md">Commandes</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="clients.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm0-6c2.67 0 8 1.34 8 4s-5.33 4-8 4-8-1.34-8-4 1.34-4 8-4 8 1.34 8 4z"/></svg>
+<span class="font-label-md text-label-md">Clients</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant pt-4">
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="profilutilisateur.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm0-6c2.67 0 8 1.34 8 4s-5.33 4-8 4-8-1.34-8-4 1.34-4 8-4 8 1.34 8 4z"/></svg>
+<span class="font-label-md text-label-md">Profil</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="parametre.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94c-.06-.37-.09-.76-.09-1.15v-3.5c0-2.48-1.51-4.5-4.09-4.5S10.51 5 10.51 7.5v3.5c0 .39-.03.78-.09 1.15-.06.33-.02.64.06.94.06.03.3.06.61.06.94v3.5c0 2.48 1.51 4.5 4.09 4.5s4.09-2.02 4.09-4.5v-3.5c0-.39.03-.78.09-1.15.06-.33.02-.64-.06-.94-.06-.03-.3-.06-.61-.06-.94v-3.5c0-2.48-1.51-4.5-4.09-4.5S10.51 5 10.51 7.5v3.5c0 .39-.03.78-.09 1.15.06.37.09.76.09 1.15.09v3.5c0 2.48 1.51 4.5 4.09 4.5s4.09-2.02 4.09-4.5v-3.5c0-.39.03-.78.09-1.15.06-.33.02-.64-.06-.94-.06-.03-.3-.06-.61-.06-.94v-3.5c0-2.48-1.51-4.5-4.09-4.5zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+<span class="font-label-md text-label-md">Paramètres</span>
+</a>
+<a class="flex items-center gap-3 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface rounded-lg px-4 py-3 mx-2 transition-colors" href="dashboard.html">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M10.09 15.59L11 14.7V11.5c0-.28-.22-.5-.5-.5s-.5.22-.5.5v3.2l.91-.89c.31-.3.31-.85-.09-1.04l-2.66 2.66c-.19.19-.19.19-.51 0-.7l2.66-2.66c.19-.19.51-.19.7 0l-.91.89zM17 2H7c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H7V4h10v12z"/></svg>
+<span class="font-label-md text-label-md">Déconnexion</span>
+</a>
+</div>
+</aside>
+<header class="fixed top-0 right-0 left-0 md:left-64 z-40 flex justify-between items-center px-6 py-3 bg-surface/70 backdrop-blur-xl shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full focus:outline-none focus:border-primary transition-colors text-body-sm font-body-sm" placeholder="Rechercher un médicament..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="hover:bg-surface-container-low rounded-full p-2 text-on-surface-variant">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+</button>
+<button class="hover:bg-surface-container-low rounded-full p-2 text-on-surface-variant">
+<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+</button>
+<a href="profilutilisateur.html" class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant hover:ring-2 hover:ring-primary transition-all">
+<img class="w-full h-full object-cover" data-alt="A portrait of a professional West African pharmacist wearing a clean white lab coat and glasses, standing in a bright, modern pharmacy setting with high-key lighting. The style is clean, corporate, and focuses on trust and professional expertise, matching the emerald green and ivory theme." src="https://lh3.googleusercontent.com/aida-public/AB6AXuANYpUpptxVcwPIc2IkzDiUio09tlrS5vTdfcfCeM4UROgCFyP5WpZ-FOZ2vfdiT98rMJblthurTKXubgvMjeN3Q7MH2--kgijAWxoxXRaHBMAHYIQqxxOdsSncT2-gKW24DqIdMAPH1ba-2W_03Lop2JuhfT_0tyIJ_jkrU8XZWMTU9DFCx7medcsmkghy0VCuiywBsJkrqhX_qImjB2yd9ppPQ8-KW-IH8jXrEv7wZGkvVk5UnnL2tw"/>
+</a>
+</div>
+</header>
+<main class="pt-20 pb-24 md:pl-64 md:pb-8 min-h-screen">
+<div class="px-6 py-8 max-w-7xl mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Gestion d'Inventaire</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Gérez votre stock de médicaments et suivez les dates d'expiration.</p>
+</div>
+<button class="flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded-xl font-bold hover:opacity-90 transition-opacity shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined">add</span>
+<span class="font-label-md text-label-md">Nouveau Produit</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+<div class="bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<span class="text-primary material-symbols-outlined text-4xl mb-2">medication</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Produits</p>
+<p class="font-headline-md text-headline-md text-on-surface">1,284</p>
+</div>
+</div>
+<div class="bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<span class="text-tertiary material-symbols-outlined text-4xl mb-2">warning</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Stock Bas</p>
+<p class="font-headline-md text-headline-md text-tertiary">24 articles</p>
+</div>
+</div>
+<div class="bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<span class="text-error material-symbols-outlined text-4xl mb-2">event_busy</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Péremption Proche</p>
+<p class="font-headline-md text-headline-md text-error">12 articles</p>
+</div>
+</div>
+<div class="bg-surface p-6 rounded-2xl shadow-sm border border-outline-variant flex flex-col justify-between">
+<span class="text-primary material-symbols-outlined text-4xl mb-2">payments</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Valeur Stock</p>
+<p class="font-headline-md text-headline-md text-on-surface">4.2M <span class="text-sm font-normal">FCFA</span></p>
+</div>
+</div>
+</div>
+<div class="bg-surface rounded-2xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant flex flex-wrap gap-4 items-center justify-between bg-surface-container-low">
+<div class="flex gap-2 scrolling-hide overflow-x-auto pb-1">
+<button class="px-4 py-2 bg-primary text-on-primary rounded-full font-label-md text-label-md">Tous</button>
+<button class="px-4 py-2 hover:bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">Antibiotiques</button>
+<button class="px-4 py-2 hover:bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">Analgésiques</button>
+<button class="px-4 py-2 hover:bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">Sirop</button>
+<button class="px-4 py-2 hover:bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">Hygiène</button>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                        Filtres Avancés
+                    </button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest text-on-surface-variant">
+<th class="px-6 py-4 font-label-md text-label-md uppercase tracking-wider">Produit</th>
+<th class="px-6 py-4 font-label-md text-label-md uppercase tracking-wider">Catégorie</th>
+<th class="px-6 py-4 font-label-md text-label-md uppercase tracking-wider text-center">Quantité</th>
+<th class="px-6 py-4 font-label-md text-label-md uppercase tracking-wider text-right">Prix (FCFA)</th>
+<th class="px-6 py-4 font-label-md text-label-md uppercase tracking-wider">Expiration</th>
+<th class="px-6 py-4 font-label-md text-label-md uppercase tracking-wider">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-quality close-up photo of a white and blue medicine box labeled Paracetamol with pharmaceutical blisters next to it, set against a clean white clinical background with soft shadows. Professional medical photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdLukJpyU0_UIH7mjtbUiPLXPLQGdf_GLDoJi2q-XFB72vk49eAHz6B7jDdejFQqvTFe7TKI3_OTyIin7HqLtlxtJh9RGTmAaECQ_1AawX5HaT6uWr6A0gkZk7fEeRGa7A7rrhfAKIlfbxPezZQpUEqnrw1hUL7hVTF9a8sS-y2znB548I6iE7HpOBdullHokmAHWZMUYxZUwnvxTeqtqJCdJ_Ou26JyU0pDfpGYNmwFY-cPBUrG11bA"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Paracétamol 500mg</p>
+<p class="text-xs text-on-surface-variant font-body-sm">Boîte de 16 comprimés</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-label-md">Analgésique</span>
+</td>
+<td class="px-6 py-4 text-center">
+<p class="font-label-md text-label-md">142</p>
+<div class="w-20 h-1 bg-surface-container-highest rounded-full mx-auto mt-2">
+<div class="h-full bg-primary rounded-full progress-bar-70"></div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-currency-display text-currency-display text-on-surface">1,500</td>
+<td class="px-6 py-4">
+<span class="font-body-sm text-body-sm">12 Oct 2025</span>
+</td>
+<td class="px-6 py-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up studio shot of a pharmaceutical syrup bottle with an orange label, showcasing a modern design for pediatric medicine. The lighting is soft and clinical, highlighting the glass texture and label clarity in an ivory and white environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwPoeye4wZsRZnd1zIxKvcA9V6LgBPsXFCPFgQo03ReU0WIcBP_L9M49X17SnM2fioz0bkOmab856vQjcK2blPTnAInRA9JB7c2Y6hYS_anbvHPRF9JAZsWDJUUf3dK2u36X8cNMlnPZVD5D_avYwEotLogG78dH898V_cIHXs9V5xtYwcQuDogtzeFpQRuE9IdAo6Tw3Qh7OVMIcAM5ZDAxjV9dR17ES82YucnqTcv4XCJbbwfN38Xw"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Amoxicilline Sirop</p>
+<p class="text-xs text-on-surface-variant font-body-sm">Flacon 60ml / 250mg</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-label-md">Antibiotique</span>
+</td>
+<td class="px-6 py-4 text-center">
+<p class="font-label-md text-label-md text-tertiary font-bold">8</p>
+<div class="w-20 h-1 bg-surface-container-highest rounded-full mx-auto mt-2">
+<div class="h-full bg-tertiary rounded-full progress-bar-15"></div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-currency-display text-currency-display text-on-surface">3,250</td>
+<td class="px-6 py-4">
+<span class="font-body-sm text-body-sm">15 Jan 2025</span>
+</td>
+<td class="px-6 py-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Macro photography of pharmaceutical medicine boxes neatly stacked on glass shelves. The focus is on the clean typography and vibrant accents of green and orange on the packaging. The background is a soft-focus pharmacy interior with professional high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4GpWcn85A_D0g4nu05Er-aGhPehMObM0pqYh1TA_vvoa1swZpskGEi5C95SiljPdA-xyvGDakVz6sHH60iN8c73PQ5gxlbxqDRuXf11tsHlMwkKAv9JWGhJv6AX-A2Fmppd84hyQ16k3Uhrxc_brIF055PiDQPPzoSlYFUjPOm30Tu5i-hi2Mx-QPmhoN4CqQKJhNTbW-W08VWYfAS4EqKSZ4W2ouK3eD6T8kDwSc_3bFBfDFlLBUCQ"/>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Voltaren Gel</p>
+<p class="text-xs text-on-surface-variant font-body-sm">Tube 50g / 1%</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full text-xs font-label-md">Anti-inflammatoire</span>
+</td>
+<td class="px-6 py-4 text-center">
+<p class="font-label-md text-label-md">35</p>
+<div class="w-20 h-1 bg-surface-container-highest rounded-full mx-auto mt-2">
+<div class="h-full bg-primary rounded-full progress-bar-45"></div>
+</div>
+</td>
+<td class="px-6 py-4 text-right font-currency-display text-currency-display text-on-surface">4,800</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1 text-error">
+<span class="material-symbols-outlined text-sm filled">warning</span>
+<span class="font-label-sm text-label-sm font-bold">28 Nov 2024</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 bg-surface-container-low flex items-center justify-between">
+<p class="text-body-sm font-body-sm text-on-surface-variant">Affichage de 1-10 sur 1,284 produits</p>
+<div class="flex gap-2">
+<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="p-2 border border-outline-variant rounded hover:bg-surface-container-high text-on-surface-variant">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<nav class="md:hidden fixed bottom-0 left-0 right-0 glass-panel border-t-0 flex justify-around items-center py-3 px-2 z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="tableaudebordpharmacy.html">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Tableau</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined filled">inventory_2</span>
+<span class="text-[10px] font-bold">Stock</span>
+<div class="w-1 h-1 bg-primary rounded-full"></div>
+</a>
+<a class="bg-primary p-3 -mt-10 rounded-full shadow-lg shadow-primary/30 text-on-primary active:scale-95 transition-transform" href="nouvellevente.html">
+<span class="material-symbols-outlined">point_of_sale</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant" href="clients.html">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-medium">Profil</span>
+</a>
+</nav>
+<script>
+        const API_BASE = 'http://localhost:3000/api';
+        const token = localStorage.getItem('pharmacie_token');
+
+        async function loadInventory() {
+            try {
+                if (!token) {
+                    window.location.href = 'dashboard.html';
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE}/inventory`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const inventory = await response.json();
+                    console.log('Inventaire chargé:', inventory);
+                }
+            } catch (error) {
+                console.error('Erreur de chargement de l\'inventaire:', error);
+            }
+        }
+
+        loadInventory();
+
+        document.querySelectorAll('tbody tr').forEach(row => {
+            const actionButton = row.querySelector('td:last-child .material-symbols-outlined');
+            if (actionButton) {
+                row.addEventListener('mouseenter', () => {
+                    actionButton.classList.add('scale-110');
+                });
+                row.addEventListener('mouseleave', () => {
+                    actionButton.classList.remove('scale-110');
+                });
+            }
+        });
+    </script>
+</body></html>
