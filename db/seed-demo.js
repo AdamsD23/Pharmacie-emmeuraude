@@ -122,7 +122,22 @@ async function seedDemo() {
     return true;
 }
 
-module.exports = { seedDemo };
+/**
+ * Mode démo uniquement : décale toutes les dates de ventes pour que la plus récente soit aujourd'hui.
+ * Sans cela, le graphique du tableau de bord se vide au fil des jours sur la démo en ligne.
+ */
+async function refreshDemoDates() {
+    const [row] = await query('SELECT DATEDIFF(CURDATE(), DATE(MAX(date))) AS retard FROM ventes');
+    const days = Number(row?.retard);
+    if (!days || days <= 0) return;
+    await query(`UPDATE ventes SET date = DATE_ADD(date, INTERVAL ${days} DAY),
+                 annulee_le = IF(annulee_le IS NULL, NULL, DATE_ADD(annulee_le, INTERVAL ${days} DAY))`);
+    await query(`UPDATE commandes SET date_commande = DATE_ADD(date_commande, INTERVAL ${days} DAY),
+                 date_livraison = IF(date_livraison IS NULL, NULL, DATE_ADD(date_livraison, INTERVAL ${days} DAY))`);
+    console.log(`✅ Démo : dates des ventes avancées de ${days} jour(s)`);
+}
+
+module.exports = { seedDemo, refreshDemoDates };
 
 // Lancement direct : node db/seed-demo.js
 if (require.main === module) {

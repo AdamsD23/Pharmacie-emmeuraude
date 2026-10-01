@@ -123,7 +123,9 @@
 
     App.ready(async () => {
         const hour = new Date().getHours();
-        const name = (App.user.nom_complet || App.user.username).split(' ')[0];
+        // Prénom affiché sans les titres (Dr, M., Mme…)
+        const words = (App.user.nom_complet || App.user.username).split(/\s+/);
+        const name = words.find(w => !/^(dr\.?|pr\.?|m\.?|mme\.?|mlle\.?)$/i.test(w)) || words[0];
         document.getElementById('greeting').textContent = `${hour < 18 ? 'Bonjour' : 'Bonsoir'}, ${name}`;
         document.getElementById('today-label').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 

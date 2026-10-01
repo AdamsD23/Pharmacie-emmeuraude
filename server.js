@@ -11,7 +11,7 @@ const path = require('path');
 const config = require('./config');
 const Logger = require('./utils/logger');
 const { initDB, initTables, seedAdmin, closePool } = require('./db/mysql');
-const { seedDemo } = require('./db/seed-demo');
+const { seedDemo, refreshDemoDates } = require('./db/seed-demo');
 
 const RateLimiter = require('./middleware/rateLimit');
 const { errorHandler } = require('./middleware/errorHandler');
@@ -82,7 +82,10 @@ async function start() {
         await initDB();
         await initTables();
         await seedAdmin();
-        if (config.SEED_DEMO) await seedDemo();
+        if (config.SEED_DEMO) {
+            await seedDemo();
+            await refreshDemoDates();
+        }
 
         const app = createApp();
         const server = app.listen(config.PORT, () => {
